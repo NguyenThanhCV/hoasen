@@ -12,12 +12,12 @@ import "./index.css";
 
 const STORE = {
   name: "Vật tư nhà kính Hoa Sen",
-  phone: "098 357 1112",
-  phoneLink: "tel:0983571112",
-  email: "vattunhakinhhoasen@gmail.com",
-  mapUrl: "https://maps.app.goo.gl/WqDQ3Z28RvLjf49d8",
-  facebookUrl: "https://www.facebook.com/vattunongnghiephoasen",
-  tiktokUrl: "https://www.tiktok.com/@nhakinhlamdongh?_r=1&_t=ZS-9A6FuPVVRUA",
+  phone: process.env.REACT_APP_STORE_PHONE || "098 357 1112",
+  phoneLink: `tel:${(process.env.REACT_APP_STORE_PHONE || "098 357 1112").replaceAll(" ", "")}`,
+  email: process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com",
+  mapUrl: process.env.REACT_APP_MAP_URL || "",
+  facebookUrl: process.env.REACT_APP_FACEBOOK_URL || "",
+  tiktokUrl: process.env.REACT_APP_TIKTOK_URL || "",
 };
 
 const FooterLink = ({ to, children }) => (

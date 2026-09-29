@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const Banner = require("../models/Banner");
 
-const image = (photo) => `https://images.unsplash.com/${photo}?auto=format&fit=crop&w=1800&q=85`;
+const image = (photo) => `${process.env.ASSET_BASE_URL || ""}/${photo}?auto=format&fit=crop&w=1800&q=85`;
 const rows = [
   { pageKey: "home", name: "Trang chủ · Giải pháp nhà kính", eyebrow: "VẬT TƯ NHÀ KÍNH HOA SEN", title: "Giải pháp vật tư cho nhà kính hiện đại", description: "Từ khung, màng phủ đến phụ kiện thi công – chọn đúng vật tư cho mùa vụ bền vững.", buttonText: "Khám phá sản phẩm", buttonLink: "/products", imageUrl: image("photo-1585320806297-9794b3e4eeae"), sortOrder: 1 },
   { pageKey: "home", name: "Trang chủ · Nhà kính", eyebrow: "THI CÔNG ĐỒNG BỘ", title: "Không gian trồng trọt chủ động quanh năm", description: "Khám phá vật tư giúp bảo vệ cây trồng trước nắng, mưa và côn trùng.", buttonText: "Xem danh mục", buttonLink: "/categories", imageUrl: image("photo-1530836369250-ef72a3f5cda8"), sortOrder: 2 },

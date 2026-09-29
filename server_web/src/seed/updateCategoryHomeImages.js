@@ -29,7 +29,7 @@ async function main() {
   const categories = await Category.find({}, { name: 1 }).sort({ createdAt: -1 }).lean();
   let updated = 0;
   for (const [index, category] of categories.entries()) {
-    const image = `https://images.unsplash.com/${photos[index % photos.length]}?auto=format&fit=crop&w=1200&h=675&q=85`;
+    const image = `${process.env.ASSET_BASE_URL || ""}/${photos[index % photos.length]}?auto=format&fit=crop&w=1200&h=675&q=85`;
     await Category.updateOne({ _id: category._id }, { $set: { homeImage: image } });
     updated += 1;
   }

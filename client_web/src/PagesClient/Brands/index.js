@@ -109,7 +109,7 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
       return brand.logo;
     }
 
-    return "https://via.placeholder.com/500x300?text=Brand";
+    return process.env.REACT_APP_BRAND_PLACEHOLDER_URL || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
   };
 
   const renderPageNumbers = () => {

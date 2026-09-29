@@ -232,30 +232,42 @@
    ========================================================= */
 
 .banner-button {
-  height: 46px;
-  padding: 0 23px;
-  border: none;
-  border-radius: 24px;
-  background: #1677ff;
-
   display: inline-flex;
+  min-width: 154px;
+  max-width: min(100%, 250px);
+  min-height: 48px;
   align-items: center;
   justify-content: center;
-
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 8px;
+  background: var(--brand-700, #247348);
+  color: #fff;
   font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-
-  box-shadow: 0 7px 18px rgba(22, 119, 255, 0.35);
-  transition: all 0.25s ease;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .banner-button:hover {
-  background: #4096ff !important;
-
+  background: var(--brand-800, #185638);
+  color: #fff;
   transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
 
-  box-shadow: 0 10px 25px rgba(22, 119, 255, 0.45);
+.banner-button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.banner-button-label {
+  min-width: 0;
+  text-align: center;
 }
 
 .banner-slider .banner-button,
@@ -425,10 +437,8 @@
   }
 
   .banner-button {
-    height: 41px;
-
-    padding: 0 18px;
-
+    min-height: 44px;
+    padding: 9px 16px;
     font-size: 13px;
   }
 
@@ -466,8 +476,8 @@
   }
 
   .banner-button {
-    height: 39px;
-
-    padding: 0 15px;
+    min-width: 144px;
+    min-height: 42px;
+    padding: 8px 14px;
   }
 }

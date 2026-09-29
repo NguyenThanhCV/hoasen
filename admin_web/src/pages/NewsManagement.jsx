@@ -40,7 +40,7 @@ const emptyCategory = {
   status: "active",
 };
 const storefrontUrl =
-  import.meta.env.VITE_STOREFRONT_URL || "https://api.minserver.click";
+  import.meta.env.VITE_STOREFRONT_URL;
 
 export default function NewsManagement() {
   const [tab, setTab] = useState("articles");

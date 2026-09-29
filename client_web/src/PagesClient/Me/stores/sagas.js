@@ -21,7 +21,7 @@ function* meRequestSaga() {
       return;
     }
 
-    const user = result?.data?.user;
+    const user = result?.data;
 
     yield put(saveMeAction(user));
   } catch (error) {

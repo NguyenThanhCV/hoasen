@@ -16,7 +16,7 @@ export const unwrapList = (result) => {
 };
 
 export const imageOf = (item) =>
-  item?.thumbnail || item?.images?.[0] || item?.variant?.thumbnail || "https://placehold.co/600x600/f3f4f6/64748b?text=Product";
+  item?.thumbnail || item?.images?.[0] || item?.variant?.thumbnail || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
 
 export const attributesOf = (attributes) => {
   if (!attributes) return [];

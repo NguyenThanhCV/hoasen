@@ -154,7 +154,7 @@ const Categories = ({
       return category.image;
     }
 
-    return "https://via.placeholder.com/800x600?text=Category";
+    return process.env.REACT_APP_CATEGORY_PLACEHOLDER_URL || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
   };
 
   const getProductCount = (category) => {

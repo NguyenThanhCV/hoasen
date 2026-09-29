@@ -368,26 +368,6 @@ const HeaderPage = () => {
   );
 
   // =====================================================
-  // PRODUCT MENU
-  // =====================================================
-
-  const productMenu = (
-    <Menu>
-      <Menu.Item key="all-products">
-        <Link to="/products">Tất cả sản phẩm</Link>
-      </Menu.Item>
-
-      <Menu.Item key="categories">
-        <Link to="/categories">Danh mục</Link>
-      </Menu.Item>
-
-      <Menu.Item key="brands">
-        <Link to="/brands">Thương hiệu</Link>
-      </Menu.Item>
-    </Menu>
-  );
-
-  // =====================================================
   // MAIN MENU
   // =====================================================
 

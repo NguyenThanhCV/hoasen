@@ -21,8 +21,8 @@ export function HomeHero() {
       <span className="home-contact-eyebrow">CẦN TƯ VẤN CHỌN VẬT TƯ?</span>
       <h2>Chia sẻ nhu cầu khu vườn với Hoa Sen</h2>
       <p>Đội ngũ cửa hàng hỗ trợ trao đổi về sản phẩm, kích thước và quy cách phù hợp.</p>
-      <a className="home-contact-phone" href="tel:0983571112"><CustomerServiceOutlined /> <span className="home-contact-phone-number">098 357 1112</span> <span>→</span></a>
-      <a className="home-contact-map" href="https://maps.app.goo.gl/WqDQ3Z28RvLjf49d8" target="_blank" rel="noreferrer"><EnvironmentOutlined /> Xem vị trí cửa hàng</a>
+      <a className="home-contact-phone" href={`tel:${(process.env.REACT_APP_STORE_PHONE || "098 357 1112").replaceAll(" ", "")}`}><CustomerServiceOutlined /> <span className="home-contact-phone-number">{process.env.REACT_APP_STORE_PHONE || "098 357 1112"}</span> <span>→</span></a>
+      <a className="home-contact-map" href={process.env.REACT_APP_MAP_URL || "#"} target="_blank" rel="noreferrer"><EnvironmentOutlined /> Xem vị trí cửa hàng</a>
       <small>Phí giao hàng được xác nhận theo địa chỉ nhận hàng.</small>
     </aside>
   </section>;

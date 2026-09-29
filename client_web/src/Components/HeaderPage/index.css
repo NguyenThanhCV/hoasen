@@ -621,10 +621,6 @@
 ===================================================== */
 
 @media (max-width: 359px) {
-  .logo-text {
-    display: none;
-  }
-
   .header-icon-button {
     width: 36px;
   }

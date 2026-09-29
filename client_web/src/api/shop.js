@@ -23,7 +23,6 @@ export const logout = async () => {
   try { await request.post("/auth/logout", { refreshToken: localStorage.getItem("refreshToken") }); }
   finally { clearSession(); }
 };
-export const logoutAll = () => request.post("/auth/logout-all").then(unwrap);
 export const getMe = () => request.get("/auth/me").then(unwrap);
 export const updateMe = (payload) => request.patch("/auth/me", payload).then(unwrap);
 export const changePassword = (payload) => request.patch("/auth/change-password", payload).then(unwrap);
@@ -39,10 +38,7 @@ export const getVariants = (params = {}) => request.get("/variants", { params })
 export const getVariant = (id) => request.get(`/variants/${id}`).then(unwrap);
 
 export const getReviews = (productId, params = {}) => request.get(`/reviews/product/${productId}`, { params }).then(unwrap);
-export const getReview = (id) => request.get(`/reviews/${id}`).then(unwrap);
 export const createReview = (payload) => request.post("/reviews", payload).then(unwrap);
-export const updateReview = (id, payload) => request.patch(`/reviews/${id}`, payload).then(unwrap);
-export const deleteReview = (id) => request.delete(`/reviews/${id}`).then(unwrap);
 
 const cartData = (response) => dataOf(unwrap(response));
 export const getCart = () => request.get("/cart").then(cartData);
@@ -52,7 +48,6 @@ export const removeCartItem = (itemId) => request.delete(`/cart/items/${itemId}`
 export const clearCart = () => request.delete("/cart/clear").then(cartData);
 
 export const getAddresses = () => request.get("/addresses").then(unwrap);
-export const getAddress = (id) => request.get(`/addresses/${id}`).then(unwrap);
 export const createAddress = (payload) => request.post("/addresses", payload).then(unwrap);
 export const updateAddress = (id, payload) => request.patch(`/addresses/${id}`, payload).then(unwrap);
 export const deleteAddress = (id) => request.delete(`/addresses/${id}`).then(unwrap);
@@ -60,20 +55,16 @@ export const deleteAddress = (id) => request.delete(`/addresses/${id}`).then(unw
 export const createOrder = (payload) => request.post("/orders", payload).then(unwrap);
 export const getOrders = (params = {}) => request.get("/orders", { params }).then(unwrap);
 export const getOrder = (id) => request.get(`/orders/${id}`).then(unwrap);
-export const updateOrder = (id, payload) => request.patch(`/orders/${id}`, payload).then(unwrap);
 export const cancelOrder = (id) => request.patch(`/orders/${id}/cancel`).then(unwrap);
 
 export const getWishlist = () => request.get("/wishlist").then(unwrap);
 export const addWishlist = (product) => request.post("/wishlist/products", { product }).then(unwrap);
 export const removeWishlist = (productId) => request.delete(`/wishlist/products/${productId}`).then(unwrap);
-export const clearWishlist = () => request.delete("/wishlist").then(unwrap);
 
 export const getNotifications = (params = {}) => request.get("/notifications", { params }).then(unwrap);
 export const readNotification = (id) => request.patch(`/notifications/${id}/read`).then(unwrap);
 export const readAllNotifications = () => request.post("/notifications/read-all").then(unwrap);
-export const deleteNotification = (id) => request.delete(`/notifications/${id}`).then(unwrap);
 
 export const validateCoupon = (code) => request.get(`/coupons/code/${encodeURIComponent(code)}`).then(unwrap);
-export const createPayment = (payload) => request.post("/payments", payload).then(unwrap);
 
 export { dataOf };

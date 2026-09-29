@@ -5,9 +5,9 @@ import "./style.css";
 
 const STORE = {
   name: "Vật tư nhà kính Hoa Sen",
-  phone: "098 357 1112",
-  email: "vattunhakinhhoasen@gmail.com",
-  mapUrl: "https://maps.app.goo.gl/WqDQ3Z28RvLjf49d8",
+  phone: process.env.REACT_APP_STORE_PHONE || "098 357 1112",
+  email: process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com",
+  mapUrl: process.env.REACT_APP_MAP_URL || "",
 };
 
 const pages = {

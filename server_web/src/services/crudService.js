@@ -1,6 +1,6 @@
 const AppError = require("../utils/AppError");
 const escapeRegex = require("../utils/escapeRegex");
-exports.make = (Model, { populate = [], ownerField = null } = {}) => ({
+exports.make = (Model, { populate = [] } = {}) => ({
   list: async (filter = {}, q = {}) => {
     const page = Math.max(+q.page || 1, 1),
       limit = Math.min(Math.max(+q.limit || 20, 1), 100);

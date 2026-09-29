@@ -80,19 +80,6 @@ a:hover, a:focus-visible { text-decoration: none; }
 .user-arrow { color: #718174; }
 .header-search { width: 210px; }
 .header-search .ant-input-affix-wrapper { height: 42px; border-radius: 12px; background: #f6f8f3; }
-@media (max-width: 1199px) {
-  .shop-header { gap: 14px; }
-  .header-navigation { display: none; }
-  .header-right { gap: 6px; }
-  .header-user { border: 0; background: transparent; }
-}
-@media (max-width: 767px) {
-  .shop-header { height: 68px; }
-  .company-logo { width: 48px; height: 48px; }
-  .logo-title { font-size: 15px; }
-  .header-icon-button, .mobile-menu-button { width: 36px; height: 36px; border-radius: 11px; }
-}
-
 /* Full customer profile with explicit save confirmation */
 .account-page { width: min(100%, 860px); max-width: none; margin: 0 auto; padding: 8px 0 42px; }
 .account-page>h1 { margin: 8px 0; color: var(--brand-900); font-size: clamp(30px, 4vw, 40px); }
@@ -233,8 +220,6 @@ a:hover, a:focus-visible { text-decoration: none; }
 .banner-slide { height: clamp(340px, 38vw, 510px); }
 .banner-overlay { background: linear-gradient(90deg, rgba(10,35,24,.78), rgba(10,35,24,.42) 48%, rgba(10,35,24,.05)); }
 .banner-content h1 { text-shadow: 0 2px 18px rgba(0,0,0,.15); }
-.banner-button.ant-btn-primary { display: inline-flex; align-items: center; gap: 10px; height: auto; padding: 13px 20px; border: 0; border-radius: 8px; background: var(--accent); box-shadow: 0 7px 20px rgba(0,0,0,.15); font-weight: 700; }
-.banner-button.ant-btn-primary:hover { background: #d98526; }
 
 /* Home, listings, product cards and information pages */
 .home-page { max-width: 1360px; margin: 0 auto; color: var(--shop-ink); }
@@ -355,7 +340,6 @@ a:hover, a:focus-visible { text-decoration: none; }
 .header-user-info .user-name { font-size: 14px; }
 .banner-label { font-size: 12px; }
 .banner-content p { font-size: 18px; line-height: 1.65; }
-.banner-button.ant-btn-primary { font-size: 15px; }
 .home-kicker { font-size: 12px; }
 .home-hero-copy>p { font-size: 17px; line-height: 1.75; }
 .home-primary-link, .home-secondary-link { font-size: 15px; }
@@ -431,7 +415,6 @@ a:hover, a:focus-visible { text-decoration: none; }
   .banner-label { font-size: 11px; }
   .banner-content h1 { font-size: clamp(30px, 7vw, 38px); line-height: 1.14; }
   .banner-content p { font-size: 16px; line-height: 1.55; }
-  .banner-button.ant-btn-primary { font-size: 14px; }
   .home-hero-copy>p { font-size: 16px; }
   .home-proof-row { font-size: 12px; }
   .home-section-heading h2, .home-brand-section h2 { font-size: 32px; }
@@ -458,14 +441,6 @@ a:hover, a:focus-visible { text-decoration: none; }
 }
 
 @media (max-width: 480px) {
-  .shop-header { padding-right: 10px; padding-left: 10px; }
-  .header-logo { min-width: 0; flex: 0 1 auto; }
-  .logo-link { min-width: 0; }
-  .logo-text { min-width: 0; margin-left: 5px; margin-right: 2px; }
-  .company-logo { width: 48px; height: 48px; }
-  .logo-title { font-size: 17px; }
-  .header-right { gap: 0; }
-  .header-icon-button, .mobile-menu-button { width: 34px; height: 34px; }
   .banner-content h1 { font-size: 29px; }
   .banner-content p { font-size: 15px; }
   .home-hero h1 { font-size: 39px; }
@@ -495,4 +470,92 @@ p a:focus-visible {
 .home-contact-phone-number {
   text-decoration: underline !important;
   text-underline-offset: 3px;
+}
+
+/* Responsive storefront header */
+.shop-header {
+  box-sizing: border-box;
+  display: flex;
+  min-width: 0;
+  gap: 16px;
+}
+
+.header-logo,
+.logo-link,
+.logo-text,
+.header-navigation {
+  min-width: 0;
+}
+
+.header-logo { flex: 0 1 auto; }
+.header-navigation { flex: 1 1 auto; margin: 0; }
+.main-menu { width: 100%; min-width: 0; justify-content: center; }
+.header-right { flex: 0 0 auto; align-items: center; gap: 6px; }
+.header-search { flex: 0 1 210px; min-width: 150px; }
+.mobile-menu-button { display: none; flex: 0 0 42px; align-items: center; justify-content: center; }
+.logo-title { white-space: nowrap; }
+
+@media (min-width: 1280px) and (max-width: 1519px) {
+  .shop-header { gap: 12px; }
+  .company-logo { width: 56px; height: 56px; }
+  .logo-title { font-size: 15px; }
+  .logo-subtitle { font-size: 8px; letter-spacing: 1px; }
+  .header-search { flex-basis: 170px; min-width: 140px; }
+  .main-menu > .ant-menu-item,
+  .main-menu > .ant-menu-submenu { padding-right: 8px !important; padding-left: 8px !important; }
+  .header-user { gap: 6px; padding-right: 7px; }
+  .user-name { max-width: 94px; }
+}
+
+@media (max-width: 1519px) {
+  .shop-header { gap: 14px; }
+  .header-navigation { display: none; }
+  .mobile-menu-button { display: inline-flex; }
+  .header-right { gap: 6px; }
+  .header-user { border: 0; background: transparent; }
+}
+
+@media (max-width: 991px) {
+  .header-search { display: none; }
+  .header-user-info,
+  .user-arrow { display: none; }
+  .header-user { padding: 3px; }
+}
+
+@media (max-width: 767px) {
+  .shop-header { height: 68px; padding-right: 16px; padding-left: 16px; gap: 10px; }
+  .company-logo { width: 48px; height: 48px; }
+  .logo-link { gap: 5px; }
+  .logo-text { margin: 0; }
+  .logo-title { max-width: 150px; font-size: 14px; line-height: 1.15; white-space: normal; }
+  .logo-subtitle { display: none; }
+  .header-right { gap: 4px; }
+  .header-icon-button,
+  .mobile-menu-button { width: 38px; height: 38px; flex-basis: 38px; border-radius: 10px; }
+  .ant-drawer-content-wrapper { width: min(320px, calc(100vw - 20px)) !important; }
+  .mobile-account-info { min-width: 0; overflow-wrap: anywhere; }
+  .mobile-account-info strong { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 620px) {
+  .language-button { display: none; }
+}
+
+@media (max-width: 479px) {
+  .shop-header { height: 64px; padding-right: 12px; padding-left: 12px; gap: 8px; }
+  .header-user { display: none; }
+  .header-right { gap: 4px; }
+  .header-icon-button,
+  .mobile-menu-button { width: 36px; height: 36px; flex-basis: 36px; }
+  .logo-title { max-width: 145px; font-size: 14px; }
+}
+
+@media (max-width: 390px) {
+  .shop-header { padding-right: 10px; padding-left: 10px; }
+  .company-logo { width: 44px; height: 44px; }
+  .logo-title { max-width: 124px; font-size: 13px; }
+}
+
+@media (max-width: 359px) {
+  .logo-title { max-width: 105px; font-size: 12px; }
 }

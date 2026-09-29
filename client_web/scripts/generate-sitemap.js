@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const outputDirectory = path.resolve(__dirname, "../build");
 const configuredSiteUrl = process.env.REACT_APP_SITE_URL;
@@ -36,7 +37,7 @@ if (!fs.existsSync(outputDirectory)) {
     });
     const sitemap = [
       '<?xml version="1.0" encoding="UTF-8"?>',
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+      `<urlset xmlns="${process.env.REACT_APP_SITEMAP_SCHEMA_URL}">`,
       ...entries,
       "</urlset>",
       "",
@@ -48,14 +49,14 @@ if (!fs.existsSync(outputDirectory)) {
       const canonical = `${siteOrigin}/`;
       const logo = `${siteOrigin}/hoa-sen-logo.jpg`;
       const organization = {
-        "@context": "https://schema.org",
+        "@context": process.env.REACT_APP_SCHEMA_CONTEXT,
         "@type": "Organization",
         name: "Vật tư nhà kính Hoa Sen",
         url: siteOrigin,
         logo,
-        email: "vattunhakinhhoasen@gmail.com",
-        telephone: "+84983571112",
-        sameAs: ["https://www.facebook.com/vattunongnghiephoasen", "https://www.tiktok.com/@nhakinhlamdongh"],
+        email: process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com",
+        telephone: `+84${(process.env.REACT_APP_STORE_PHONE || "098 357 1112").replace(/\D/g, "").replace(/^0/, "")}`,
+        sameAs: [process.env.REACT_APP_FACEBOOK_URL, process.env.REACT_APP_TIKTOK_URL].filter(Boolean),
       };
       let html = fs.readFileSync(indexPath, "utf8");
       html = html

@@ -10,6 +10,8 @@ const NewsCategory = require("../models/NewsCategory");
 const NewsArticle = require("../models/NewsArticle");
 
 const slugify = (value) => String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "d").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const assetBaseUrl = process.env.ASSET_BASE_URL;
+if (!assetBaseUrl) throw new Error("ASSET_BASE_URL is not configured");
 
 const categoryRows = [
   { key: "film", name: "Màng nhà kính", description: "Màng phủ nhà kính, giữ nhiệt và tối ưu ánh sáng cho vườn trồng.", parent: null },
@@ -126,8 +128,8 @@ async function run() {
       shortDescription: `Vật tư nhà vườn Hoa Sen – quy cách mẫu ${spec}. Vui lòng xác nhận tồn kho và giá trước khi đặt hàng.`,
       description: `${name}. Sản phẩm mẫu để tham khảo quy cách cho công trình và vườn trồng. Giá, hình ảnh và tồn kho cần được cửa hàng xác nhận trước khi đặt hàng thực tế. Liên hệ Hoa Sen để được tư vấn phù hợp với kích thước và nhu cầu sử dụng.`,
       category: categoryMap[categoryKey]._id, brand: brand._id,
-      thumbnail: `https://images.unsplash.com/${["photo-1500382017468-9049fed747ef", "photo-1416879595882-3373a0480b5b", "photo-1497250681960-ef046c08a56e"][index % 3]}?auto=format&fit=crop&w=1000&q=80`,
-      images: [`https://images.unsplash.com/${["photo-1500382017468-9049fed747ef", "photo-1416879595882-3373a0480b5b", "photo-1497250681960-ef046c08a56e"][index % 3]}?auto=format&fit=crop&w=1400&q=85`],
+      thumbnail: `${assetBaseUrl}/${["photo-1500382017468-9049fed747ef", "photo-1416879595882-3373a0480b5b", "photo-1497250681960-ef046c08a56e"][index % 3]}?auto=format&fit=crop&w=1000&q=80`,
+      images: [`${assetBaseUrl}/${["photo-1500382017468-9049fed747ef", "photo-1416879595882-3373a0480b5b", "photo-1497250681960-ef046c08a56e"][index % 3]}?auto=format&fit=crop&w=1400&q=85`],
       attributes: { "Quy cách": [spec], "Thương hiệu": ["Hoa Sen"] },
       hasVariants: true, status: "active", featured: index < 8,
       isNew: index < 10, isBestSeller: index >= 10 && index < 16, isOnSale: index % 7 === 0,
@@ -159,7 +161,7 @@ async function run() {
     const data = {
       title: article.title, slug, excerpt: article.excerpt, content: article.content,
       category: newsCategoryMap[article.category]._id, author: admin._id, tags: article.tags,
-      coverImage: `https://images.unsplash.com/${article.image}?auto=format&fit=crop&w=1400&q=85`,
+      coverImage: `${assetBaseUrl}/${article.image}?auto=format&fit=crop&w=1400&q=85`,
       status: "published", publishedAt: new Date(Date.now() - articles.indexOf(article) * 86400000),
       readingMinutes: Math.max(2, Math.ceil(words / 180)),
     };

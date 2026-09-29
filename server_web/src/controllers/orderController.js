@@ -25,9 +25,13 @@ exports.create = a(async (req, res) =>
     .status(201)
     .json({ success: true, data: await s.create(req.user._id, req.body) }),
 );
-exports.update = a(async (req, res) =>
-  res.json({ success: true, data: await s.update(req.params.id, req.body) }),
-);
+exports.update = a(async (req, res) => {
+  const admin = ["admin", "manager", "staff"].includes(req.user.role);
+  res.json({
+    success: true,
+    data: await s.update(req.params.id, req.body, req.user._id, admin),
+  });
+});
 exports.cancel = a(async (req, res) =>
   res.json({
     success: true,

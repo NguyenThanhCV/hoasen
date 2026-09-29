@@ -212,21 +212,22 @@ exports.create = async (
   }
   return exports.get(order._id, user, false);
 };
-exports.update = async (id, d) => {
+exports.update = async (id, d, user, admin = false) => {
   if (d.orderStatus === "cancelled") {
-    return exports.cancel(id, null, true);
+    return exports.cancel(id, user, admin);
   }
   const allowed = ["paymentMethod", "paymentStatus", "orderStatus", "note"];
   const data = {};
   for (const k of allowed) if (d[k] !== undefined) data[k] = d[k];
   if (d.orderStatus === "cancelled") data.cancelledAt = new Date();
   if (d.orderStatus === "completed") data.completedAt = new Date();
-  const o = await Order.findByIdAndUpdate(id, data, {
-    new: true,
-    runValidators: true,
-  });
+  const o = await Order.findOneAndUpdate(
+    admin ? { _id: id } : { _id: id, user },
+    data,
+    { new: true, runValidators: true },
+  );
   if (!o) throw new AppError("Order không tồn tại", 404);
-  return exports.get(id, null, true);
+  return exports.get(id, user, admin);
 };
 exports.cancel = async (id, user, admin = false) => {
   const { order } = await exports.get(id, user, admin);

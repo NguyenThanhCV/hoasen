@@ -322,7 +322,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
       return product.images[0];
     }
 
-    return "https://placehold.co/600x600?text=Product";
+    return process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
   };
 
   /*

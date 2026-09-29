@@ -21,9 +21,9 @@ function pageKeyFor(pathname) {
 
 function BannerAction({ banner }) {
   if (!banner.buttonText || !banner.buttonLink) return null;
-  const label = <>{banner.buttonText} <ArrowRightOutlined /></>;
-  if (/^https?:\/\//i.test(banner.buttonLink)) return <a className="ant-btn ant-btn-primary ant-btn-lg banner-button" href={banner.buttonLink} target="_blank" rel="noreferrer">{label}</a>;
-  return <Link className="ant-btn ant-btn-primary ant-btn-lg banner-button" to={banner.buttonLink.startsWith("/") ? banner.buttonLink : `/${banner.buttonLink}`}>{label}</Link>;
+  const label = <><span className="banner-button-label">{banner.buttonText}</span><ArrowRightOutlined aria-hidden="true" /></>;
+  if (/^https?:\/\//i.test(banner.buttonLink)) return <a className="banner-button" href={banner.buttonLink} target="_blank" rel="noreferrer">{label}</a>;
+  return <Link className="banner-button" to={banner.buttonLink.startsWith("/") ? banner.buttonLink : `/${banner.buttonLink}`}>{label}</Link>;
 }
 
 const BannerSlider = () => {

@@ -9,6 +9,9 @@ import {
 
 import "./index.css";
 
+const storePhone = process.env.REACT_APP_STORE_PHONE || "098 357 1112";
+const storeEmail = process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com";
+
 const PreHeader = () => {
   return (
     <div className="pre-header">
@@ -20,7 +23,7 @@ const PreHeader = () => {
         <div className="pre-header-left">
           {/* PHONE */}
 
-          <a href="tel:0983571112" className="pre-header-contact phone">
+          <a href={`tel:${storePhone.replaceAll(" ", "")}`} className="pre-header-contact phone">
             <span className="pre-header-icon">
               <PhoneOutlined />
             </span>
@@ -28,7 +31,7 @@ const PreHeader = () => {
             <span className="pre-header-text">
               <span className="contact-label">Hotline</span>
 
-              <strong>098 357 1112</strong>
+              <strong>{storePhone}</strong>
             </span>
           </a>
 
@@ -39,7 +42,7 @@ const PreHeader = () => {
           {/* EMAIL */}
 
           <a
-            href="mailto:vattunhakinhhoasen@gmail.com"
+            href={`mailto:${storeEmail}`}
             className="pre-header-contact email">
             <span className="pre-header-icon">
               <MailOutlined />
@@ -48,7 +51,7 @@ const PreHeader = () => {
             <span className="pre-header-text">
               <span className="contact-label">Email</span>
 
-              <strong>vattunhakinhhoasen@gmail.com</strong>
+              <strong>{storeEmail}</strong>
             </span>
           </a>
 
@@ -58,7 +61,7 @@ const PreHeader = () => {
 
           {/* LOCATION */}
 
-          <a className="pre-header-contact location" href="https://maps.app.goo.gl/WqDQ3Z28RvLjf49d8" target="_blank" rel="noreferrer">
+          <a className="pre-header-contact location" href={process.env.REACT_APP_MAP_URL || "#"} target="_blank" rel="noreferrer">
             <span className="pre-header-icon">
               <EnvironmentOutlined />
             </span>
@@ -91,11 +94,11 @@ const PreHeader = () => {
           {/* SOCIAL */}
 
           <div className="pre-header-social">
-            <a href="https://www.facebook.com/vattunongnghiephoasen" target="_blank" rel="noreferrer" aria-label="Facebook Vật tư nông nghiệp Hoa Sen" title="Facebook Hoa Sen">
+            <a href={process.env.REACT_APP_FACEBOOK_URL || "#"} target="_blank" rel="noreferrer" aria-label="Facebook Vật tư nông nghiệp Hoa Sen" title="Facebook Hoa Sen">
               <FacebookOutlined />
             </a>
 
-            <a href="https://www.tiktok.com/@nhakinhlamdongh?_r=1&_t=ZS-9A6FuPVVRUA" target="_blank" rel="noreferrer" aria-label="TikTok Nhà kính Lâm Đồng" title="TikTok Hoa Sen" className="pre-header-tiktok">
+            <a href={process.env.REACT_APP_TIKTOK_URL || "#"} target="_blank" rel="noreferrer" aria-label="TikTok Nhà kính Lâm Đồng" title="TikTok Hoa Sen" className="pre-header-tiktok">
               ♪
             </a>
           </div>

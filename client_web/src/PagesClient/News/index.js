@@ -4,9 +4,14 @@ import request from "../../utils/request";
 import { useSeo } from "../../Components/SEO";
 import "./style.css";
 
+document.documentElement.style.setProperty(
+  "--news-hero-image",
+  `url("${process.env.REACT_APP_NEWS_HERO_IMAGE_URL || ""}")`,
+);
+
 const unwrap = (response) => response?.data?.data ?? response?.data ?? response;
 const dateLabel = (date) => date ? new Date(date).toLocaleDateString("vi-VN", { day: "2-digit", month: "long", year: "numeric" }) : "Tin mới";
-const imageOf = (article) => article.coverImage || "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80";
+const imageOf = (article) => article.coverImage || process.env.REACT_APP_NEWS_PLACEHOLDER_URL || "";
 
 function NewsCard({ article, featured = false }) {
   return <article className={`news-card${featured ? " news-card-featured" : ""}`}>
@@ -49,7 +54,7 @@ export function NewsDetailPage() {
   useEffect(() => { let active = true; request.get(`/news/${slug}`).then((response) => { if (active) setState({ article: unwrap(response), loading: false, error: "" }); }).catch((error) => { if (active) setState({ article: null, loading: false, error: error.response?.data?.message || "Không tìm thấy bài viết." }); }); return () => { active = false; }; }, [slug]);
   const article = state.article;
   const articleSchema = article?.title ? {
-    "@context": "https://schema.org",
+    "@context": process.env.REACT_APP_SCHEMA_CONTEXT,
     "@type": "NewsArticle",
     headline: article.title,
     description: article.excerpt || article.title,

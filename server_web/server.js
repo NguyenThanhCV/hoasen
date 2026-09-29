@@ -10,7 +10,22 @@ const errorHandler = require("./src/middlewares/errorMiddleware");
 
 const app = express();
 app.use(helmet());
-app.use(cors());
+const allowedOrigins = [
+  process.env.CLIENT_ORIGIN,
+  process.env.ADMIN_ORIGIN,
+  ...(process.env.EXTRA_CORS_ORIGINS || "").split(","),
+]
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin))
+        return callback(null, true);
+      callback(new Error("Origin không được phép"));
+    },
+  }),
+);
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(

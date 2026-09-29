@@ -69,18 +69,6 @@ exports.clear = async (user) => {
   await cart.save();
   return get(user);
 };
-exports.create = async (user, data) => {
-  const old = await Cart.findOne({ user });
-  if (old) throw new AppError("Cart đã tồn tại", 409);
-  return Cart.create({ user, items: data.items || [] });
-};
-exports.update = async (user, data) => {
-  const cart = await Cart.findOne({ user });
-  if (!cart) throw new AppError("Cart không tồn tại", 404);
-  cart.items = data.items || [];
-  await cart.save();
-  return get(user);
-};
 exports.remove = async (user) => {
   const cart = await Cart.findOneAndDelete({ user });
   if (!cart) throw new AppError("Cart không tồn tại", 404);

@@ -1,10 +1,26 @@
 const s = require("../services/paymentService"),
   a = require("../utils/asyncHandler");
 exports.list = a(async (req, res) =>
-  res.json({ success: true, ...(await s.list(req.query)) }),
+  res.json({
+    success: true,
+    ...(await s.list(
+      req.query,
+      ["admin", "manager", "staff"].includes(req.user.role)
+        ? null
+        : req.user._id,
+    )),
+  }),
 );
 exports.get = a(async (req, res) =>
-  res.json({ success: true, data: await s.get(req.params.id) }),
+  res.json({
+    success: true,
+    data: await s.get(
+      req.params.id,
+      ["admin", "manager", "staff"].includes(req.user.role)
+        ? null
+        : req.user._id,
+    ),
+  }),
 );
 exports.create = a(async (req, res) =>
   res

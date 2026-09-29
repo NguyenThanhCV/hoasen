@@ -112,10 +112,6 @@ const LoginComponent = (props) => {
 
       const user = result?.data?.user;
 
-      const accessToken = result?.data?.accessToken;
-
-      const refreshToken = result?.data?.refreshToken;
-
       /*
        * =====================================================
        * LOGIN SUCCESS

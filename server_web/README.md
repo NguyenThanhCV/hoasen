@@ -27,7 +27,7 @@ Accounts: admin@gmail.com / 12345678, manager@gmail.com / 12345678, staff@gmail.
 Change these passwords before production.
 
 ## API base
-`http://192.168.1.198:5000/api`
+`http://localhost:5000/api`
 
 ### Auth
 - POST /auth/register

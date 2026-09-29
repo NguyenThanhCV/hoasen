@@ -1,6 +1,6 @@
 # API backend dùng cho frontend
 
-Base URL mặc định: `http://192.168.1.198:5000/api` (đổi bằng `REACT_APP_API_URL`). Axios client tự gắn `Authorization: Bearer <accessToken>` và tự refresh khi nhận `401`.
+Base URL mặc định: `http://localhost:5000/api` (đổi bằng `REACT_APP_API_URL`). Axios client tự gắn `Authorization: Bearer <accessToken>` và tự refresh khi nhận `401`.
 
 ## Public API
 

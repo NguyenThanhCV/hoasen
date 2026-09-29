@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 
 const DEFAULT_TITLE = "Vật tư nhà kính Hoa Sen | Thiết bị tưới & nông nghiệp";
 const DEFAULT_DESCRIPTION = "Vật tư nhà kính Hoa Sen cung cấp vật tư nhà kính, thiết bị tưới và giải pháp nông nghiệp. Khám phá sản phẩm, quy cách và đặt hàng trực tuyến.";
+const STORE_EMAIL = process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com";
+const STORE_PHONE = process.env.REACT_APP_STORE_PHONE || "098 357 1112";
 const PRIVATE_PATH = /^\/(login|register|cart|checkout|account|orders|wishlist|notifications|addresses)(\/|$)/;
 
 const PAGE_META = [
@@ -110,14 +112,14 @@ export default function StorefrontSEO() {
   const hasProductFilters = route === "/products" && [...query.keys()].length > 0;
   const siteUrl = publicBaseUrl();
   const organization = {
-    "@context": "https://schema.org",
+    "@context": process.env.REACT_APP_SCHEMA_CONTEXT,
     "@type": "Organization",
     name: "Vật tư nhà kính Hoa Sen",
-    email: "vattunhakinhhoasen@gmail.com",
-    telephone: "+84983571112",
+    email: STORE_EMAIL,
+    telephone: `+84${STORE_PHONE.replace(/\D/g, "").replace(/^0/, "")}`,
     logo: siteUrl ? new URL("/hoa-sen-logo.jpg", siteUrl).href : undefined,
     url: siteUrl || undefined,
-    sameAs: ["https://www.facebook.com/vattunongnghiephoasen", "https://www.tiktok.com/@nhakinhlamdongh"],
+    sameAs: [process.env.REACT_APP_FACEBOOK_URL, process.env.REACT_APP_TIKTOK_URL].filter(Boolean),
   };
   useSeo({
     title: page?.title || (isProduct ? "Chi tiết sản phẩm | Vật tư nhà kính Hoa Sen" : isArticle ? "Bài viết nhà vườn | Hoa Sen" : privatePage ? "Tài khoản mua sắm | Hoa Sen" : DEFAULT_TITLE),

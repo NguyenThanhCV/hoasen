@@ -23,13 +23,6 @@ exports.get = async (id, user) => {
   if (!d) throw new AppError("Không tìm thấy thông báo", 404);
   return d;
 };
-exports.create = async (d) => Model.create(d);
-exports.update = async (id, user, d) => {
-  const n = await exports.get(id, user);
-  Object.assign(n, d);
-  await n.save();
-  return n;
-};
 exports.remove = async (id, user) => {
   const n = await exports.get(id, user);
   await n.deleteOne();

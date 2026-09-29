@@ -2,8 +2,10 @@ const Model = require("../models/Payment"),
   Order = require("../models/Order"),
   AppError = require("../utils/AppError"),
   crud = require("./crudService").make(Model, { populate: ["order", "user"] });
-exports.list = async (q) => crud.list({}, q);
-exports.get = crud.get;
+exports.list = async (q, user = null) =>
+  crud.list(user ? { user } : {}, q);
+exports.get = async (id, user = null) =>
+  crud.get(id, user ? { user } : {});
 exports.create = async (user, d) => {
   const order = await Order.findOne({ _id: d.order, user });
   if (!order)
@@ -23,5 +25,11 @@ exports.create = async (user, d) => {
     metadata: d.metadata || {},
   });
 };
-exports.update = crud.update;
+exports.update = async (id, data) => {
+  const allowed = ["status", "provider", "transactionId", "paidAt", "failedAt", "metadata"];
+  const update = {};
+  for (const key of allowed)
+    if (data[key] !== undefined) update[key] = data[key];
+  return crud.update(id, update);
+};
 exports.remove = crud.remove;

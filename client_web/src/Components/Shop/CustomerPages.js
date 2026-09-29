@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircleFilled, DeleteOutlined, EnvironmentOutlined, EditOutlined, HeartFilled, HomeOutlined, PhoneOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { CheckCircleFilled, DeleteOutlined, EnvironmentOutlined, EditOutlined, HeartFilled, HomeOutlined, PhoneOutlined, PlusOutlined } from "@ant-design/icons";
 import * as api from "../../api/shop";
 import { imageOf, money, unwrapList } from "../../utils/shop";
 

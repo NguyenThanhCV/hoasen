@@ -10,6 +10,13 @@ import reducers from "./redux/reducers";
 import sagas from "./redux/sagas";
 import createSagaMiddleware from "@redux-saga/core";
 import "bootstrap/dist/css/bootstrap.min.css";
+const fontStylesheet = process.env.REACT_APP_FONT_CSS_URL;
+if (fontStylesheet) {
+  const fontLink = document.createElement("link");
+  fontLink.rel = "stylesheet";
+  fontLink.href = fontStylesheet;
+  document.head.appendChild(fontLink);
+}
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(reducers(), {}, applyMiddleware(sagaMiddleware));
 sagaMiddleware.run(sagas);

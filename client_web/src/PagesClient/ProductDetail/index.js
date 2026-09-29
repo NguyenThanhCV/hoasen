@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import {
   ArrowLeftOutlined,
-  CarOutlined,
   CheckCircleOutlined,
   HeartFilled,
   HeartOutlined,
@@ -20,7 +19,6 @@ import {
   Image,
   InputNumber,
   Skeleton,
-  Space,
   Tag,
   message,
 } from "antd";
@@ -105,12 +103,6 @@ const normalizeAttributes = (attributes) => {
   }
 
   return {};
-};
-
-const getAttributeEntries = (variant) => {
-  const attributes = normalizeAttributes(variant?.attributes);
-
-  return Object.entries(attributes);
 };
 
 const ProductDetail = ({
@@ -307,8 +299,6 @@ const ProductDetail = ({
      * attributes của variant.
      */
     if (matchedVariant) {
-      const matchedAttributes = normalizeAttributes(matchedVariant.attributes);
-
       const allKeys = Object.keys(attributeGroups);
 
       const isComplete = allKeys.every(
@@ -572,7 +562,7 @@ const ProductDetail = ({
   const productDescription = String(productDetail?.shortDescription || productDetail?.description || "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const productSchema = productDetail?.name ? {
-    "@context": "https://schema.org",
+    "@context": process.env.REACT_APP_SCHEMA_CONTEXT,
     "@type": "Product",
     name: productDetail.name,
     description: productDescription || `Sản phẩm ${productDetail.name} tại Vật tư nhà kính Hoa Sen.`,
@@ -592,8 +582,8 @@ const ProductDetail = ({
         "@type": "Offer",
         priceCurrency: "VND",
         price: Number(currentPrice),
-        availability: currentStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-        itemCondition: "https://schema.org/NewCondition",
+        availability: `${process.env.REACT_APP_SCHEMA_CONTEXT}/${currentStock > 0 ? "InStock" : "OutOfStock"}`,
+        itemCondition: `${process.env.REACT_APP_SCHEMA_CONTEXT}/NewCondition`,
       },
     } : {}),
   } : undefined;

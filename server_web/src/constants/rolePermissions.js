@@ -9,8 +9,6 @@ module.exports = {
     "order.create",
     "order.cancel",
     "coupon.read",
-    "payment.read",
-    "payment.create",
     ...CRUD("review"),
     ...CRUD("wishlist"),
   ],
