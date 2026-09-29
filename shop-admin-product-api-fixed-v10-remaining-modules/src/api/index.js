@@ -1,0 +1,12 @@
+import request from'./request';
+const crud=(base)=>({list:p=>request.get(base,{params:p}),get:id=>request.get(`${base}/${id}`),create:d=>request.post(base,d),update:(id,d)=>request.patch(`${base}/${id}`,d),remove:id=>request.delete(`${base}/${id}`)});
+export const auth={login:d=>request.post('/auth/login',d),me:()=>request.get('/auth/me'),updateMe:d=>request.patch('/auth/me',d),changePassword:d=>request.patch('/auth/change-password',d),refresh:d=>request.post('/auth/refresh',d),logout:d=>request.post('/auth/logout',d),logoutAll:()=>request.post('/auth/logout-all')};
+export const users={...crud('/users'),stats:()=>request.get('/users/stats'),status:(id,d)=>request.patch(`/users/${id}/status`,d),role:(id,d)=>request.patch(`/users/${id}/role`,d),permissions:(id,d)=>request.patch(`/users/${id}/permissions`,d)};
+export const categories=crud('/categories');export const brands=crud('/brands');export const products=crud('/products');
+export const variants=crud('/variants');
+export const addresses=crud('/admin/addresses');export const carts=crud('/admin/carts');export const notifications={...crud('/admin/notifications'),read:id=>request.patch(`/notifications/${id}/read`),readAll:()=>request.post('/notifications/read-all')};export const wishlists=crud('/admin/wishlists');export const orders=crud('/admin/orders');export const payments=crud('/admin/payments');export const reviews=crud('/admin/reviews');export const coupons=crud('/coupons');
+export const orderItems=crud('/order-items');
+export const newsArticles={list:p=>request.get('/admin/newsArticles',{params:p}),get:id=>request.get(`/admin/newsArticles/${id}`),create:d=>request.post('/news',d),update:(id,d)=>request.patch(`/news/${id}`,d),remove:id=>request.delete(`/news/${id}`)};
+export const newsCategories={list:p=>request.get('/admin/newsCategories',{params:p}),get:id=>request.get(`/admin/newsCategories/${id}`),create:d=>request.post('/news-categories',d),update:(id,d)=>request.patch(`/news-categories/${id}`,d),remove:id=>request.delete(`/news-categories/${id}`)};
+export const banners=crud('/admin/banners');
+export const productReviews={list:(product,p)=>request.get(`/reviews/product/${product}`,{params:p}),get:id=>request.get(`/reviews/${id}`),create:d=>request.post('/reviews',d),update:(id,d)=>request.patch(`/reviews/${id}`,d),moderate:(id,d)=>request.patch(`/reviews/${id}/moderate`,d),remove:id=>request.delete(`/reviews/${id}`)};

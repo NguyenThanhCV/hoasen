@@ -1,0 +1,14 @@
+{
+  "short_name": "Hoa Sen",
+  "name": "Vật tư nhà kính Hoa Sen",
+  "icons": [
+    {
+      "src": "hoa-sen-logo.jpg",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#164832",
+  "background_color": "#ffffff"
+}

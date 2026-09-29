@@ -1,0 +1,6 @@
+import React from "react";
+import{Link}from'react-router-dom';import{fmtDate,fmtMoney}from'../utils/helpers';
+export function Page({title,children,actions}){return <><div className="pagehead"><div><h1>{title}</h1></div><div>{actions}</div></div>{children}</>}
+export function Table({columns,rows,onRow}){return <div className="tablewrap"><table><thead><tr>{columns.map(c=><th key={c.key}>{c.label}</th>)}</tr></thead><tbody>{rows.map((r,i)=><tr key={r._id||r.id||i} onClick={()=>onRow?.(r)}>{columns.map(c=><td key={c.key}>{typeof c.render==='function'?c.render(r):r[c.key]??'—'}</td>)}</tr>)}{!rows.length&&<tr><td colSpan={columns.length} className="empty">Không có dữ liệu</td></tr>}</tbody></table></div>}
+export const Money=({v})=>fmtMoney(v);export const DateCell=({v})=>fmtDate(v);export const Btn=({children,...p})=><button className="btn" {...p}>{children}</button>;export const Danger=({children,...p})=><button className="btn danger" {...p}>{children}</button>;export const Edit=({to})=><Link className="btn small" to={to}>Sửa</Link>;
+export function Modal({title,onClose,children}){return <div className="modalback"><div className="modal"><div className="modalhead"><h2>{title}</h2><button className="x" onClick={onClose}>×</button></div>{children}</div></div>}

@@ -1,0 +1,6 @@
+export const idOf=v=>{if(!v)return'';if(typeof v==='object')return String(v._id||v.id||v.$oid||'');return String(v)};
+export const unwrap=res=>{const x=res?.data;const d=x?.data??x;if(Array.isArray(d))return{items:d,total:d.length};if(d?.items)return{items:d.items,total:d.total??d.count??d.items.length};if(d?.products)return{items:d.products,total:d.total??d.products.length};if(d?.users)return{items:d.users,total:d.total??d.users.length};if(d?.categories)return{items:d.categories,total:d.total??d.categories.length};if(d?.brands)return{items:d.brands,total:d.total??d.brands.length};if(d?.variants)return{items:d.variants,total:d.total??d.variants.length};if(d?.coupons)return{items:d.coupons,total:d.total??d.coupons.length};return{items:[],total:0,data:d}};
+export const one=res=>res?.data?.data??res?.data;
+export const err=e=>{const d=e?.response?.data; if(d?.errors&&typeof d.errors==='object'){const details=Object.entries(d.errors).map(([k,v])=>`${k}: ${v?.message||v}`).join('; '); if(details)return d.message?`${d.message} — ${details}`:details;} return d?.message||d?.error||e?.message||'Có lỗi xảy ra';};
+export const fmtMoney=v=>Number(v||0).toLocaleString('vi-VN')+' ₫';
+export const fmtDate=v=>v?new Date(v).toLocaleString('vi-VN'):'—';

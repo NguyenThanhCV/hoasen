@@ -1,0 +1,59 @@
+.trigger {
+    padding: 0 24px;
+    font-size: 18px;
+    line-height: 64px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .trigger:hover {
+    color: #1890ff;
+  }
+  
+  .logo {
+    height: 32px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .site-layout .site-layout-background {
+    background: #fff;
+  }
+  
+  .ant-layout-content {
+    background-color: #f0f2f5 !important;
+  }
+  
+  .userContainer1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    width: 12%;
+  }
+  
+  .user1 {
+    width: 100%;
+  }
+  
+  .user:hover {
+    background-color: #ccc;
+  }
+  
+  .translate {
+    padding: 10px;
+  }
+  
+  .div {
+    padding: 10px;
+    width: 100%;
+  }
+  .div:hover {
+    background-color: #e6f7ff;
+    color: #1890ff;
+  }
+  .noneLink {
+    text-decoration: none;
+    font-size: 11px;
+  }

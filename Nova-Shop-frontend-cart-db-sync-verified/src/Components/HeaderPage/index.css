@@ -1,0 +1,635 @@
+/* =====================================================
+   HEADER
+===================================================== */
+
+.shop-header {
+  height: 76px;
+  width: 100%;
+
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+
+  background: #ffffff !important;
+
+  border-bottom: 1px solid #eeeeee;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
+
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.header-logo {
+  flex-shrink: 0;
+
+  margin-right: 10px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.logo-link:hover {
+  text-decoration: none;
+}
+
+.company-logo {
+  width: 68px;
+  height: 68px;
+  flex: 0 0 auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #248353;
+  color: #ffffff;
+
+  font-size: 23px;
+  font-weight: 800;
+
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 8px;
+
+  margin-right: 5px;
+
+  margin-bottom: 0;
+}
+
+.logo-title {
+  color: #164832;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  line-height: 30px;
+
+  white-space: nowrap;
+}
+
+.logo-subtitle {
+  color: #748b63;
+
+  height: 3px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  white-space: nowrap;
+}
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.header-navigation {
+  flex: 1;
+
+  margin-right: 2px;
+
+  min-width: 0;
+}
+
+.main-menu {
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: none !important;
+
+  background: transparent !important;
+}
+
+.main-menu > .ant-menu-item,
+.main-menu > .ant-menu-submenu {
+  height: 76px !important;
+
+  display: flex !important;
+  align-items: center;
+
+  padding: 0 9px !important;
+
+  font-size: 14px;
+
+  font-weight: 500;
+}
+
+.main-menu > .ant-menu-item:hover,
+.main-menu > .ant-menu-submenu:hover {
+  color: #248353 !important;
+}
+
+.main-menu > .ant-menu-item-selected {
+  color: #248353 !important;
+}
+
+.main-menu > .ant-menu-item-selected::after {
+  border-bottom: 2px solid #248353 !important;
+}
+
+/* =====================================================
+   LINK TRONG MENU
+===================================================== */
+
+.main-menu a {
+  color: inherit;
+
+  text-decoration: none;
+}
+
+.main-menu a:hover {
+  color: inherit;
+
+  text-decoration: none;
+}
+
+/* =====================================================
+   HEADER RIGHT
+===================================================== */
+
+.header-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   DROPDOWN TRIGGER
+===================================================== */
+
+.dropdown-trigger {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.header-search {
+  width: 220px;
+}
+
+.header-search .ant-input-affix-wrapper {
+  height: 40px;
+
+  border-radius: 22px;
+
+  background: #f6f7f9;
+
+  border: 1px solid transparent;
+
+  box-shadow: none;
+}
+
+.header-search .ant-input-affix-wrapper:hover,
+.header-search .ant-input-affix-wrapper-focused {
+  background: #ffffff;
+
+  border-color: #248353;
+}
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.header-icon-button {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 19px;
+
+  color: #333333;
+}
+
+.header-icon-button:hover {
+  color: #248353 !important;
+
+  background: #f3f6fa !important;
+}
+
+/* =====================================================
+   USER
+===================================================== */
+
+.header-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 4px 8px;
+
+  border-radius: 25px;
+
+  cursor: pointer;
+}
+
+.header-user:hover {
+  background: #f5f7fa;
+}
+
+.header-user-info {
+  display: flex;
+
+  flex-direction: column;
+
+  line-height: 16px;
+
+  min-width: 60px;
+}
+
+.user-small {
+  color: #999999;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+}
+
+.user-name {
+  color: #222222;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.user-arrow {
+  color: #999999;
+
+  font-size: 9px;
+}
+
+/* =====================================================
+   MOBILE BUTTON
+===================================================== */
+
+.mobile-menu-button {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+
+  font-size: 21px;
+}
+
+/* =====================================================
+   MOBILE NAVIGATION
+===================================================== */
+
+.mobile-navigation {
+  width: 100%;
+
+  background: #ffffff;
+}
+
+/* =====================================================
+   MOBILE SEARCH
+===================================================== */
+
+.mobile-search {
+  padding: 15px;
+}
+
+.mobile-search .ant-input-affix-wrapper {
+  border-radius: 24px;
+}
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+.mobile-navigation .ant-menu {
+  border-right: none !important;
+
+  border-bottom: none !important;
+}
+
+.mobile-navigation .ant-menu-item,
+.mobile-navigation .ant-menu-submenu-title {
+  height: 48px;
+
+  line-height: 48px;
+}
+
+/* =====================================================
+   MOBILE ACCOUNT
+===================================================== */
+
+.mobile-account {
+  margin: 10px 15px 20px;
+
+  padding: 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  border-radius: 12px;
+
+  background: #f7f8fa;
+}
+
+.mobile-account-info {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+.mobile-account-info span {
+  color: #999999;
+
+  font-size: 12px;
+}
+
+.mobile-account-info strong {
+  color: #222222;
+
+  font-size: 14px;
+}
+
+/* =====================================================
+   DRAWER
+===================================================== */
+
+.ant-drawer-header {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.ant-drawer-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.user-modal {
+  padding: 10px 20px 15px;
+
+  text-align: center;
+}
+
+.user-modal h3 {
+  margin-top: 15px;
+
+  margin-bottom: 5px;
+}
+
+.user-modal p {
+  color: #888888;
+
+  margin-bottom: 20px;
+}
+
+/* =====================================================
+   LARGE DESKTOP
+   > 1400px
+===================================================== */
+
+@media (min-width: 1401px) {
+  .shop-header {
+    padding-left: 50px;
+
+    padding-right: 50px;
+  }
+
+  .header-search {
+    width: 260px;
+  }
+}
+
+/* =====================================================
+   DESKTOP
+   1200px - 1400px
+===================================================== */
+
+@media (max-width: 1400px) {
+  .header-logo {
+    margin-right: 15px;
+  }
+
+  .main-menu > .ant-menu-item,
+  .main-menu > .ant-menu-submenu {
+    padding-left: 9px !important;
+
+    padding-right: 9px !important;
+  }
+
+  .header-search {
+    width: 180px;
+  }
+}
+
+/* =====================================================
+   TABLET
+   992px - 1199px
+===================================================== */
+
+@media (max-width: 1199px) {
+  .shop-header {
+    padding: 0 20px;
+  }
+
+  .header-navigation {
+    display: none;
+  }
+
+  .header-search {
+    width: 200px;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   TABLET NHỎ
+   768px - 991px
+===================================================== */
+
+@media (max-width: 991px) {
+  .header-search {
+    display: none;
+  }
+
+  .header-user-info,
+  .user-arrow {
+    display: none;
+  }
+
+  .header-user {
+    padding: 3px;
+  }
+}
+
+/* =====================================================
+   MOBILE
+   < 768px
+===================================================== */
+
+@media (max-width: 767px) {
+  .shop-header {
+    height: 64px;
+
+    padding: 0 15px;
+  }
+
+  .logo-icon {
+    width: 38px;
+
+    height: 38px;
+
+    font-size: 20px;
+  }
+
+  .company-logo { width: 52px; height: 52px; }
+
+  .logo-title {
+    font-size: 18px;
+  }
+
+  .logo-subtitle {
+    display: none;
+  }
+
+  .header-logo {
+    margin-right: auto;
+  }
+
+  .header-right {
+    gap: 2px;
+  }
+
+  .header-icon-button {
+    width: 38px;
+
+    height: 38px;
+  }
+
+  .mobile-menu-button {
+    width: 38px;
+
+    height: 38px;
+  }
+
+  .ant-drawer-content-wrapper {
+    width: 300px !important;
+  }
+}
+
+/* =====================================================
+   MOBILE NHỎ
+   < 480px
+===================================================== */
+
+@media (max-width: 479px) {
+  .shop-header {
+    padding: 0 10px;
+  }
+
+  .language-button {
+    display: none;
+  }
+
+  .logo-icon {
+    width: 36px;
+
+    height: 36px;
+  }
+
+  .logo-title {
+    font-size: 17px;
+  }
+
+  .header-user {
+    display: none;
+  }
+
+  .mobile-account {
+    padding: 12px;
+  }
+}
+
+/* =====================================================
+   MOBILE RẤT NHỎ
+   < 360px
+===================================================== */
+
+@media (max-width: 359px) {
+  .logo-text {
+    display: none;
+  }
+
+  .header-icon-button {
+    width: 36px;
+  }
+
+  .mobile-menu-button {
+    width: 36px;
+  }
+}
