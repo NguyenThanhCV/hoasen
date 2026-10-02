@@ -26,7 +26,7 @@ import "./index.css";
 const LoginComponent = (props) => {
   const { loginRequestDispatch } = props;
 
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -78,13 +78,13 @@ const LoginComponent = (props) => {
       if (!result || result.success === false) {
         notification.error({
           message: (
-            <div className="login-notification-title">Đăng nhập thất bại</div>
+            <div className="login-notification-title">{t("LoginFailed")}</div>
           ),
 
           description: (
             <div className="login-notification-description">
               {result?.message ||
-                "Email hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại."}
+                t("InvalidCredentials")}
             </div>
           ),
 
@@ -120,13 +120,12 @@ const LoginComponent = (props) => {
 
       notification.success({
         message: (
-          <div className="login-notification-title">Đăng nhập thành công</div>
+          <div className="login-notification-title">{t("LoginSuccessful")}</div>
         ),
 
         description: (
           <div className="login-notification-description">
-            Xin chào <strong>{user?.name || user?.email || "bạn"}</strong>! Chào
-            mừng bạn quay trở lại.
+            {t("WelcomeBackUser", { name: user?.name || user?.email || t("Customer") })}
           </div>
         ),
 
@@ -165,13 +164,13 @@ const LoginComponent = (props) => {
 
       notification.error({
         message: (
-          <div className="login-notification-title">Không thể đăng nhập</div>
+          <div className="login-notification-title">{t("LoginUnavailable")}</div>
         ),
 
         description: (
           <div className="login-notification-description">
             {error?.response?.data?.message ||
-              "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau."}
+              t("LoginTryAgain")}
           </div>
         ),
 
@@ -198,7 +197,7 @@ const LoginComponent = (props) => {
    * =========================================================
    */
 
-  const currentLanguage = i18n.language === "vi" ? "Tiếng Việt" : "English";
+  const currentLanguage = i18n.language === "vi" ? t("Vietnamese") : t("English");
 
   return (
     <div className="login-page">
@@ -206,9 +205,7 @@ const LoginComponent = (props) => {
           BACKGROUND
       ===================================================== */}
 
-      <div className="login-bg-circle login-bg-circle-1"></div>
-
-      <div className="login-bg-circle login-bg-circle-2"></div>
+      <div className="login-backdrop-shape" aria-hidden="true"></div>
 
       {/* =====================================================
           LANGUAGE
@@ -228,71 +225,34 @@ const LoginComponent = (props) => {
       ===================================================== */}
 
       <div className="login-wrapper">
-        {/* ===================================================
-            LEFT
-        =================================================== */}
-
-        <div className="login-introduction">
-          {/* BRAND */}
-
-          <div className="brand">
-            <img className="brand-logo" src="/hoa-sen-logo.jpg" alt="Logo Vật tư nhà kính Hoa Sen" />
-
-            <div className="brand-info">
-              <div className="brand-name">HOA SEN</div>
-
-              <div className="brand-subtitle">VẬT TƯ NHÀ KÍNH</div>
-            </div>
+        <section className="login-showcase" aria-label={t("LoginShowcaseLabel")}>
+          <div className="showcase-brand">
+            <img className="brand-logo" src="/hoa-sen-logo.jpg" alt={t("LoginShowcaseLabel")} />
           </div>
 
-          {/* INTRO */}
-
-          <div className="intro-content">
-            <div className="intro-badge">
-              <span></span>
-              HỆ THỐNG BÁN HÀNG
-            </div>
-
-            <h1>
-              Giải pháp vật tư
-              <br />
-              <strong>nhà kính chuyên nghiệp</strong>
-            </h1>
-
-            <p>
-              Cung cấp các sản phẩm và vật tư nhà kính chất lượng, giúp bạn xây
-              dựng và phát triển hệ thống trồng trọt hiệu quả.
-            </p>
-
-            {/* FEATURES */}
-
-            <div className="intro-features">
-              <div className="intro-feature">
-                <div className="feature-icon">✓</div>
-
-                <span>Sản phẩm chất lượng</span>
-              </div>
-
-              <div className="intro-feature">
-                <div className="feature-icon">✓</div>
-
-                <span>Giá cả cạnh tranh</span>
-              </div>
-
-              <div className="intro-feature">
-                <div className="feature-icon">✓</div>
-
-                <span>Hỗ trợ khách hàng</span>
-              </div>
-            </div>
+          <div className="showcase-copy">
+            <span className="showcase-kicker"><i /> {t("LoginShowcaseLabel")}</span>
+            <h1>{t("CareForYourGarden")}<br /><em>{t("GrowForGreenSeasons")}</em></h1>
+            <p>{t("LoginShowcaseDescription")}</p>
+            <div className="showcase-tags"><span>{t("GreenhouseTag")}</span><span>{t("IrrigationTag")}</span><span>{t("FarmingTag")}</span></div>
           </div>
-        </div>
 
-        {/* ===================================================
-            RIGHT LOGIN
-        =================================================== */}
+          <div className="greenhouse-art" aria-hidden="true">
+            <div className="sun-glow" />
+            <div className="greenhouse-frame"><i /><i /><i /><i /><i /></div>
+            <div className="plant plant-one"><i /><i /><i /></div>
+            <div className="plant plant-two"><i /><i /><i /></div>
+            <div className="plant plant-three"><i /><i /><i /></div>
+            <div className="ground-line" />
+          </div>
+          <span className="showcase-footer">HOASEN.VN <b>·</b> {t("BackingFarmers")}</span>
+        </section>
 
-        <div className="login-card">
+        <section className="login-side">
+          <div className="login-mobile-brand">
+            <img className="brand-logo" src="/hoa-sen-logo.jpg" alt={t("LoginShowcaseLabel")} />
+          </div>
+          <div className="login-card">
           {/* LOGIN HEADER */}
 
           <div className="login-card-header">
@@ -300,9 +260,9 @@ const LoginComponent = (props) => {
               <LoginOutlined />
             </div>
 
-            <h2>Chào mừng trở lại!</h2>
+            <h2>{t("WelcomeBack")}</h2>
 
-            <p>Đăng nhập để tiếp tục mua sắm</p>
+            <p>{t("SignInToShop")}</p>
           </div>
 
           {/* =================================================
@@ -325,18 +285,18 @@ const LoginComponent = (props) => {
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập email!",
+                  message: t("EmailRequired"),
                 },
 
                 {
                   type: "email",
-                  message: "Email không hợp lệ!",
+                  message: t("EmailInvalid"),
                 },
               ]}>
               <Input
                 size="large"
                 prefix={<MailOutlined />}
-                placeholder="Nhập địa chỉ email"
+                placeholder={t("EmailPlaceholder")}
                 autoComplete="email"
               />
             </Form.Item>
@@ -344,23 +304,23 @@ const LoginComponent = (props) => {
             {/* PASSWORD */}
 
             <Form.Item
-              label="Mật khẩu"
+              label={t("PasswordLabel")}
               name="password"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập mật khẩu!",
+                  message: t("PasswordRequired"),
                 },
 
                 {
                   min: 6,
-                  message: "Mật khẩu phải có ít nhất 6 ký tự!",
+                  message: t("PasswordMinLength"),
                 },
               ]}>
               <Input.Password
                 size="large"
                 prefix={<LockOutlined />}
-                placeholder="Nhập mật khẩu"
+                placeholder={t("PasswordPlaceholder")}
                 autoComplete="current-password"
               />
             </Form.Item>
@@ -369,7 +329,7 @@ const LoginComponent = (props) => {
 
             <div className="login-options">
               <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Ghi nhớ đăng nhập</Checkbox>
+                <Checkbox>{t("RememberLogin")}</Checkbox>
               </Form.Item>
 
               <button
@@ -377,13 +337,13 @@ const LoginComponent = (props) => {
                 className="forgot-password"
                 onClick={() => {
                   notification.info({
-                    message: "Quên mật khẩu",
+                    message: t("ForgotPasswordTitle"),
 
                     description:
-                      "Chức năng khôi phục mật khẩu sẽ được cập nhật.",
+                      t("ForgotPasswordComingSoon"),
                   });
                 }}>
-                Quên mật khẩu?
+                {t("ForgotPassword")}
               </button>
             </div>
 
@@ -397,7 +357,7 @@ const LoginComponent = (props) => {
                 block
                 loading={loading}
                 icon={<LoginOutlined />}>
-                {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                {loading ? t("SigningIn") : t("SignIn")}
               </Button>
             </Form.Item>
           </Form>
@@ -405,14 +365,14 @@ const LoginComponent = (props) => {
           {/* REGISTER */}
 
           <div className="register-area">
-            <span>Bạn chưa có tài khoản?</span>
+            <span>{t("NoAccount")}</span>
 
             <button
               type="button"
               onClick={() => {
                 navigate("/register");
               }}>
-              Đăng ký ngay
+              {t("SignUpNow")}
             </button>
           </div>
 
@@ -423,9 +383,11 @@ const LoginComponent = (props) => {
 
             <span>•</span>
 
-            <span>Vật tư nhà kính</span>
+            <span>{t("BrandMark")}</span>
           </div>
-        </div>
+          </div>
+          <div className="login-side-footer"><span>© 2026 Hoa Sen</span><span>{t("SecureSignIn")}</span></div>
+        </section>
       </div>
 
       {/* =====================================================
@@ -446,7 +408,7 @@ const LoginComponent = (props) => {
           <div className="language-title">
             <GlobalOutlined />
 
-            <span>Chọn ngôn ngữ</span>
+            <span>{t("ChooseLanguage")}</span>
           </div>
 
           <Button
@@ -455,7 +417,7 @@ const LoginComponent = (props) => {
               changeLanguage("vi");
             }}
             className={i18n.language === "vi" ? "language-active" : ""}>
-            🇻🇳 Tiếng Việt
+            🇻🇳 {t("Vietnamese")}
           </Button>
 
           <Button
@@ -464,7 +426,7 @@ const LoginComponent = (props) => {
               changeLanguage("en");
             }}
             className={i18n.language === "en" ? "language-active" : ""}>
-            🇬🇧 English
+            🇬🇧 {t("English")}
           </Button>
         </div>
       </Modal>

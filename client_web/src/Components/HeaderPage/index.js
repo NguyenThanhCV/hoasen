@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Menu,
@@ -16,7 +17,6 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
   SearchOutlined,
-  GlobalOutlined,
   DownOutlined,
   LogoutOutlined,
   ProfileOutlined,
@@ -25,6 +25,14 @@ import {
   UserAddOutlined,
   BellOutlined,
   EnvironmentOutlined,
+  TagOutlined,
+  HomeOutlined,
+  AppstoreOutlined,
+  FolderOutlined,
+  ShopOutlined,
+  InfoCircleOutlined,
+  ReadOutlined,
+  CustomerServiceOutlined,
 } from "@ant-design/icons";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -37,6 +45,7 @@ import "./index.css";
 import { getCart } from "../../api/shop";
 
 const HeaderPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -148,10 +157,10 @@ const HeaderPage = () => {
 
   const getUserName = () => {
     if (!user) {
-      return "Tài khoản";
+      return t("Account");
     }
 
-    return user.name || user.email || "Tài khoản";
+    return user.name || user.email || t("Account");
   };
 
   // =====================================================
@@ -164,10 +173,10 @@ const HeaderPage = () => {
     }
 
     if (user.role === "admin") {
-      return "Quản trị viên";
+      return t("Admin");
     }
 
-    return "Khách hàng";
+    return t("Customer");
   };
 
   // =====================================================
@@ -177,7 +186,7 @@ const HeaderPage = () => {
   const getAvatarText = () => {
     const name = getUserName();
 
-    if (!name || name === "Tài khoản") {
+    if (!name || name === t("Account")) {
       return "";
     }
 
@@ -208,9 +217,8 @@ const HeaderPage = () => {
     setMobileMenuOpen(false);
 
     notification.success({
-      message: "Đăng xuất thành công",
-
-      description: "Bạn đã đăng xuất khỏi tài khoản.",
+      message: t("LogoutSuccess"),
+      description: t("LogoutDescription"),
     });
 
     navigate("/");
@@ -319,22 +327,22 @@ const HeaderPage = () => {
   const userMenu = user ? (
     <Menu onClick={handleUserMenuClick}>
       <Menu.Item key="profile" icon={<ProfileOutlined />}>
-        Thông tin tài khoản
+        {t("Profile")}
       </Menu.Item>
 
       <Menu.Item key="orders" icon={<ShoppingCartOutlined />}>
-        Đơn hàng của tôi
+        {t("MyOrders")}
       </Menu.Item>
 
       <Menu.Item key="wishlist" icon={<HeartOutlined />}>
-        Sản phẩm yêu thích
+        {t("Favorites")}
       </Menu.Item>
 
       <Menu.Item key="notifications" icon={<BellOutlined />}>
-        Thông báo
+        {t("Notifications")}
       </Menu.Item>
       <Menu.Item key="addresses" icon={<EnvironmentOutlined />}>
-        Địa chỉ nhận hàng
+        {t("DeliveryAddress")}
       </Menu.Item>
 
       <Menu.Divider />
@@ -346,24 +354,12 @@ const HeaderPage = () => {
   ) : (
     <Menu onClick={handleUserMenuClick}>
       <Menu.Item key="login" icon={<LoginOutlined />}>
-        Đăng nhập
+        {t("Login")}
       </Menu.Item>
 
       <Menu.Item key="register" icon={<UserAddOutlined />}>
-        Đăng ký
+        {t("Register")}
       </Menu.Item>
-    </Menu>
-  );
-
-  // =====================================================
-  // LANGUAGE MENU
-  // =====================================================
-
-  const languageMenu = (
-    <Menu>
-      <Menu.Item key="vi">Tiếng Việt</Menu.Item>
-
-      <Menu.Item key="en">English</Menu.Item>
     </Menu>
   );
 
@@ -374,52 +370,58 @@ const HeaderPage = () => {
   const mainMenuItems = [
     {
       key: "home",
-
-      label: <Link to="/">Trang chủ</Link>,
+      label: <Link to="/">{t("Home")}</Link>,
+      icon: <HomeOutlined />,
     },
 
     {
       key: "products",
-
-      label: "Sản phẩm",
+      label: t("Products"),
+      icon: <AppstoreOutlined />,
 
       children: [
         {
           key: "all-products",
-
-          label: <Link to="/products">Tất cả sản phẩm</Link>,
+          label: <Link to="/products">{t("AllProducts")}</Link>,
+          icon: <AppstoreOutlined />,
         },
 
         {
           key: "categories",
-
-          label: <Link to="/categories">Danh mục</Link>,
+          label: <Link to="/categories">{t("Categories")}</Link>,
+          icon: <FolderOutlined />,
         },
 
         {
           key: "brands",
-
-          label: <Link to="/brands">Thương hiệu</Link>,
+          label: <Link to="/brands">{t("Brands")}</Link>,
+          icon: <ShopOutlined />,
         },
       ],
     },
 
     {
-      key: "about",
+      key: "coupons",
+      label: <Link to="/coupons">{t("Promotions")}</Link>,
+      icon: <TagOutlined />,
+    },
 
-      label: <Link to="/about">Giới thiệu</Link>,
+    {
+      key: "about",
+      label: <Link to="/about">{t("About")}</Link>,
+      icon: <InfoCircleOutlined />,
     },
 
     {
       key: "news",
-
-      label: <Link to="/news">Tin tức</Link>,
+      label: <Link to="/news">{t("News")}</Link>,
+      icon: <ReadOutlined />,
     },
 
     {
       key: "contact",
-
-      label: <Link to="/contact">Liên hệ</Link>,
+      label: <Link to="/contact">{t("Contact")}</Link>,
+      icon: <CustomerServiceOutlined />,
     },
   ];
 
@@ -433,6 +435,8 @@ const HeaderPage = () => {
     selectedKeys = ["home"];
   } else if (location.pathname.startsWith("/products")) {
     selectedKeys = ["products"];
+  } else if (location.pathname.startsWith("/coupons")) {
+    selectedKeys = ["coupons"];
   } else if (location.pathname.startsWith("/about")) {
     selectedKeys = ["about"];
   } else if (location.pathname.startsWith("/news")) {
@@ -463,24 +467,21 @@ const HeaderPage = () => {
             <div className="logo-text">
               <div className="logo-title">Vật tư nhà kính Hoa Sen</div>
 
-              <div className="logo-subtitle">
-                GIẢI PHÁP NÔNG NGHIỆP HIỆN ĐẠI
-              </div>
+              <div className="logo-subtitle">{t("BrandSlogan")}</div>
             </div>
           </Link>
         </div>
 
-        {/* =================================================
-            NAVIGATION
-        ================================================= */}
-
-        <div className="header-navigation">
-          <Menu
-            className="main-menu"
-            mode="horizontal"
-            selectedKeys={selectedKeys}
-            items={mainMenuItems}
-          />
+        <div className="header-search-row">
+          <div className="header-search">
+              <Input
+                value={searchText}
+                onChange={(event) => setSearchText(event.target.value)}
+                onKeyDown={handleSearchKeyDown}
+                placeholder={t("SearchProducts")}
+                suffix={<SearchOutlined onClick={handleSearch} style={{ cursor: "pointer" }} />}
+              />
+          </div>
         </div>
 
         {/* =================================================
@@ -489,52 +490,14 @@ const HeaderPage = () => {
 
         <div className="header-right">
           {/* =================================================
-              SEARCH
-          ================================================= */}
-
-          <div className="header-search">
-            <Input
-              value={searchText}
-              onChange={(event) => setSearchText(event.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Tìm kiếm sản phẩm..."
-              suffix={
-                <SearchOutlined
-                  onClick={handleSearch}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                />
-              }
-            />
-          </div>
-
-          {/* =================================================
-              LANGUAGE
-          ================================================= */}
-
-          <Dropdown
-            overlay={languageMenu}
-            placement="bottomRight"
-            trigger={["click"]}>
-            <span className="dropdown-trigger">
-              <Button
-                type="text"
-                className="header-icon-button language-button"
-                icon={<GlobalOutlined />}
-              />
-            </span>
-          </Dropdown>
-
-          {/* =================================================
               CART
           ================================================= */}
 
-          <Link to="/cart" className="dropdown-trigger">
+          <Link to="/cart" className="dropdown-trigger header-cart-link" aria-label={t("Cart")}>
             <Badge count={cartCount} size="small" offset={[-2, 2]}>
               <Button
                 type="text"
-                className="header-icon-button"
+                className="header-icon-button header-cart-button"
                 icon={<ShoppingCartOutlined />}
               />
             </Badge>
@@ -567,7 +530,7 @@ const HeaderPage = () => {
 
                 <div className="header-user-info">
                   <span className="user-small">
-                    {user ? getUserRole() : "Tài khoản"}
+                    {user ? getUserRole() : t("Account")}
                   </span>
 
                   <span className="user-name">{getUserName()}</span>
@@ -587,6 +550,15 @@ const HeaderPage = () => {
             className="mobile-menu-button"
             icon={<MenuOutlined />}
             onClick={() => setMobileMenuOpen(true)}
+          />
+        </div>
+
+        <div className="header-navigation">
+          <Menu
+            className="main-menu"
+            mode="horizontal"
+            selectedKeys={selectedKeys}
+            items={mainMenuItems}
           />
         </div>
       </header>
@@ -610,7 +582,7 @@ const HeaderPage = () => {
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder={t("SearchProducts")}
             suffix={
               <SearchOutlined
                 onClick={handleSearch}
@@ -637,7 +609,7 @@ const HeaderPage = () => {
           </Avatar>
 
           <div className="mobile-account-info">
-            <span>{user ? getUserRole() : "Tài khoản"}</span>
+            <span>{user ? getUserRole() : t("Account")}</span>
 
             <strong>{getUserName()}</strong>
           </div>
@@ -677,7 +649,7 @@ const HeaderPage = () => {
 
                   navigate("/account");
                 }}>
-                Thông tin tài khoản
+        {t("Profile")}
               </Button>
 
               <Button
@@ -691,7 +663,7 @@ const HeaderPage = () => {
 
                   navigate("/orders");
                 }}>
-                Đơn hàng của tôi
+                {t("MyOrders")}
               </Button>
 
               <Button
@@ -699,7 +671,7 @@ const HeaderPage = () => {
                 danger
                 icon={<LogoutOutlined />}
                 onClick={handleLogout}>
-                Đăng xuất
+                {t("Logout")}
               </Button>
             </>
           ) : (
@@ -716,7 +688,7 @@ const HeaderPage = () => {
 
                   navigate("/login");
                 }}>
-                Đăng nhập
+                {t("Login")}
               </Button>
 
               <Button
@@ -727,7 +699,7 @@ const HeaderPage = () => {
 
                   navigate("/register");
                 }}>
-                Đăng ký
+                {t("Register")}
               </Button>
             </>
           )}

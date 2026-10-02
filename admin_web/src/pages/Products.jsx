@@ -4,6 +4,7 @@ import { Page, Btn, Danger, Money } from "../components/UI";
 import { products, variants, categories, brands } from "../api";
 import { unwrap, err, idOf } from "../utils/helpers";
 import { loadPromotions, discountForProduct } from "../utils/promotions";
+import Media from "../components/Media";
 
 const PAGE_SIZE = 20;
 const listOf = (r) => unwrap(r).items || [];
@@ -16,7 +17,7 @@ const discountInfo = (price, compareAtPrice) => {
 const attrs = (v) => Object.entries(v?.attributes || {}).filter(([, x]) => String(x).trim());
 
 function ProductImage({ src, name }) {
-  return src ? <img className="product-thumb" src={src} alt="" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "grid"; }} /> :
+  return src ? <Media className="product-thumb" src={src} alt={name || ""} /> :
     <div className="product-thumb product-thumb-placeholder">{String(name || "SP").slice(0, 2).toUpperCase()}</div>;
 }
 
@@ -163,7 +164,7 @@ export default function Products() {
             const prices = vs.map(v => Number(v.price)).filter(Number.isFinite);
             const stock = vs.reduce((n, v) => n + Number(v.stock || 0), 0);
             const available = vs.reduce((n, v) => n + Math.max(Number(v.stock || 0) - Number(v.reservedStock || 0), 0), 0);
-            const thumb = p.thumbnail || p.images?.[0] || vs.find(v => v.thumbnail)?.thumbnail;
+            const thumb = p.thumbnail || p.images?.[0] || vs.find(v => v.thumbnail)?.thumbnail || p.video;
             const discounts = vs.map(v => discountInfo(v.price, v.compareAtPrice)).filter(v => v != null);
             const promo = discountForProduct(p, promotions);
             const saleMin = discounts.length ? Math.min(...discounts) : 0;

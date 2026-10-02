@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Carousel } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRightOutlined, ShoppingOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import * as api from "../../api/shop";
+import Media from "../Media";
+import { localized } from "../../utils/localized";
 import "./index.css";
 
 function pageKeyFor(pathname) {
@@ -27,6 +30,8 @@ function BannerAction({ banner }) {
 }
 
 const BannerSlider = () => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage || i18n.language;
   const { pathname } = useLocation();
   const pageKey = useMemo(() => pageKeyFor(pathname), [pathname]);
   const carouselRef = useRef(null);
@@ -52,23 +57,28 @@ const BannerSlider = () => {
     "--banner-content-right": position === "right" ? "9%" : "auto",
     "--banner-content-transform": position === "center" ? "translate(-50%, -50%)" : "translateY(-50%)",
   });
-  return <section className="banner-slider" aria-label="Banner trang">
+  return <section className="banner-slider" aria-label={t("PageBanner")}>
     <div className="banner-frame">
     <Carousel ref={carouselRef} autoplay={banners.length > 1} autoplaySpeed={5000} dots={banners.length > 1} arrows={false} effect="fade">
-      {banners.map((banner) => <div className="banner-slide" key={banner._id} style={{ "--banner-overlay-opacity": banner.overlayOpacity ?? 0.45, ...textPosition(banner.textPosition) }}>
-        <picture className="banner-picture">{banner.mobileImageUrl && <source media="(max-width: 767px)" srcSet={banner.mobileImageUrl} />}<img src={banner.imageUrl} alt={banner.altText || banner.title || banner.name} className="banner-image" /></picture>
+      {banners.map((banner) => {
+        const translatedBanner = { ...banner, name: localized(banner, "name", lang), buttonText: localized(banner, "buttonText", lang), title: localized(banner, "title", lang), description: localized(banner, "description", lang), eyebrow: localized(banner, "eyebrow", lang) };
+        return <div className="banner-slide" key={banner._id} style={{ "--banner-overlay-opacity": banner.overlayOpacity ?? 0.45, ...textPosition(banner.textPosition) }}>
+        <div className={`banner-media${banner.mobileImageUrl ? " has-mobile-media" : ""}`}>
+          <Media src={banner.imageUrl} alt={localized(banner, "altText", lang) || translatedBanner.title || localized(banner, "name", lang) || banner.name} className="banner-media-desktop" autoPlay muted loop controls={false} />
+          {banner.mobileImageUrl && <Media src={banner.mobileImageUrl} alt={localized(banner, "altText", lang) || translatedBanner.title || localized(banner, "name", lang) || banner.name} className="banner-media-mobile" autoPlay muted loop controls={false} />}
+        </div>
         <div className="banner-overlay" />
         <div className="banner-content">
-          {(banner.eyebrow || pageKey === "home") && <div className="banner-label"><ShoppingOutlined /><span>{banner.eyebrow || "VẬT TƯ NHÀ KÍNH HOA SEN"}</span></div>}
-          {banner.title && <h1>{banner.title}</h1>}
-          {banner.description && <p>{banner.description}</p>}
-          <BannerAction banner={banner} />
+          {(translatedBanner.eyebrow || pageKey === "home") && <div className="banner-label"><ShoppingOutlined /><span>{translatedBanner.eyebrow || t("HeroKicker")}</span></div>}
+          {translatedBanner.title && <h1>{translatedBanner.title}</h1>}
+          {translatedBanner.description && <p>{translatedBanner.description}</p>}
+          <BannerAction banner={translatedBanner} />
         </div>
-      </div>)}
+      </div>; })}
     </Carousel>
     {banners.length > 1 && <>
-      <button type="button" className="banner-manual-arrow banner-manual-prev" onClick={handlePrev} aria-label="Banner trước"><LeftOutlined /></button>
-      <button type="button" className="banner-manual-arrow banner-manual-next" onClick={handleNext} aria-label="Banner tiếp theo"><RightOutlined /></button>
+      <button type="button" className="banner-manual-arrow banner-manual-prev" onClick={handlePrev} aria-label={t("BannerPrevious")}><LeftOutlined /></button>
+      <button type="button" className="banner-manual-arrow banner-manual-next" onClick={handleNext} aria-label={t("BannerNext")}><RightOutlined /></button>
     </>}
     </div>
   </section>;

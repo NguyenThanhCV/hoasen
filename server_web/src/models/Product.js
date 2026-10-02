@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const schema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
+    nameEn: { type: String, trim: true, default: "" },
     slug: {
       type: String,
       required: true,
@@ -10,7 +11,9 @@ const schema = new mongoose.Schema(
       lowercase: true,
     },
     description: String,
+    descriptionEn: { type: String, default: "" },
     shortDescription: String,
+    shortDescriptionEn: { type: String, default: "" },
     sku: { type: String, unique: true, sparse: true, trim: true },
     barcode: String,
     category: {
@@ -27,6 +30,11 @@ const schema = new mongoose.Schema(
     thumbnail: String,
     video: String,
     attributes: { type: Map, of: [String], default: {} },
+    attributeTranslations: [{
+      name: { type: String, required: true },
+      nameEn: { type: String, default: "" },
+      values: [{ value: { type: String, required: true }, valueEn: { type: String, default: "" } }],
+    }],
     hasVariants: { type: Boolean, default: false },
     weight: Number,
     weightUnit: { type: String, default: "g" },

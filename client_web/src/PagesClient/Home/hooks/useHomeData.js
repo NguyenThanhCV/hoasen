@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getProductsService } from "../../../api/apiProduct";
 import { getVariantsService } from "../../../api/apiVariant";
 import { getCategoriesService } from "../../../api/apiCategory";
@@ -7,6 +8,7 @@ import { getBrandsService } from "../../../api/apiBrand";
 const rowsOf = (response) => Array.isArray(response?.data?.data) ? response.data.data : [];
 
 export default function useHomeData() {
+  const { t } = useTranslation();
   const [data, setData] = useState({ products: [], categories: [], brands: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -38,16 +40,18 @@ export default function useHomeData() {
           categories: categoryResult.status === "fulfilled" ? rowsOf(categoryResult.value) : [],
           brands: brandResult.status === "fulfilled" ? rowsOf(brandResult.value) : [],
         });
-        if (featuredResult.status === "rejected" && !products.length) setError("Không thể tải cửa hàng. Kiểm tra kết nối máy chủ rồi thử lại.");
+        if (featuredResult.status === "rejected" && !products.length) setError(t("StoreLoadError"));
       } catch (_) {
-        if (mounted) setError("Không thể tải sản phẩm. Kiểm tra kết nối máy chủ rồi thử lại.");
+        if (mounted) setError(t("ProductsLoadError"));
       } finally {
         if (mounted) setLoading(false);
       }
     }
     loadHome();
     return () => { mounted = false; };
-  }, []);
+  }, [t]);
 
   return { ...data, loading, error };
 }
+
+

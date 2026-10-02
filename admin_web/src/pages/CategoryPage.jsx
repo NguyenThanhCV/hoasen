@@ -3,7 +3,7 @@ import { Page, Table, Btn, Danger, Modal } from '../components/UI';
 import { categories } from '../api';
 
 const empty = {
-  name: '', slug: '', description: '', image: '', homeImage: '', parent: '',
+  name: '', nameEn: '', slug: '', description: '', descriptionEn: '', image: '', homeImage: '', parent: '',
   level: 0, sortOrder: 1, status: 'active', orderMode: 'auto'
 };
 
@@ -148,8 +148,10 @@ export default function CategoryPage() {
       const parentId = idOf(z.parent);
       setForm({
         name: z.name || '',
+        nameEn: z.nameEn || '',
         slug: z.slug || '',
         description: z.description || '',
+        descriptionEn: z.descriptionEn || '',
         image: z.image || '',
         homeImage: z.homeImage || '',
         parent: parentId,
@@ -161,8 +163,10 @@ export default function CategoryPage() {
     } catch (e) {
       setForm({
         name: row.name || '',
+        nameEn: row.nameEn || '',
         slug: row.slug || '',
         description: row.description || '',
+        descriptionEn: row.descriptionEn || '',
         image: row.image || '',
         homeImage: row.homeImage || '',
         parent: idOf(row.parent),
@@ -246,8 +250,8 @@ export default function CategoryPage() {
           ? maxSiblingOrder(parent || '') + 1
           : Math.max(1, Math.min(Number(form.sortOrder) || 1, siblingCount(parent || '') + 1));
         const data = {
-          name: form.name.trim(), slug,
-          description: form.description.trim(), image: form.image.trim(), homeImage: form.homeImage.trim(),
+          name: form.name.trim(), nameEn: form.nameEn.trim(), slug,
+          description: form.description.trim(), descriptionEn: form.descriptionEn.trim(), image: form.image.trim(), homeImage: form.homeImage.trim(),
           parent, level: desiredLevel, sortOrder: position, status: form.status
         };
         const response = await categories.create(data);
@@ -255,8 +259,8 @@ export default function CategoryPage() {
         savedId = idOf(created);
       } else {
         const data = {
-          name: form.name.trim(), slug,
-          description: form.description.trim(), image: form.image.trim(), homeImage: form.homeImage.trim(),
+          name: form.name.trim(), nameEn: form.nameEn.trim(), slug,
+          description: form.description.trim(), descriptionEn: form.descriptionEn.trim(), image: form.image.trim(), homeImage: form.homeImage.trim(),
           parent, level: desiredLevel,
           // Temporary value; final sibling order is normalized below.
           sortOrder: Math.max(1, Number(form.sortOrder) || 1),
@@ -412,6 +416,7 @@ export default function CategoryPage() {
       <div className="formgrid">
         {error && <div className="full errorbox">{error}</div>}
         <label>Tên danh mục *<input autoFocus value={form.name} onChange={(e) => change('name', e.target.value)} placeholder="Ví dụ: Áo nam" /></label>
+        <label>Tên danh mục (English)<input value={form.nameEn} onChange={(e) => change('nameEn', e.target.value)} placeholder="Category name in English" /></label>
         <label>Slug *<input value={form.slug} onChange={(e) => change('slug', e.target.value)} placeholder="ao-nam" /></label>
         <label>Danh mục cha
           <select value={form.parent} onChange={(e) => change('parent', e.target.value)}>
@@ -432,6 +437,7 @@ export default function CategoryPage() {
         </label>
         <label>Trạng thái<select value={form.status} onChange={(e) => change('status', e.target.value)}><option value="active">active</option><option value="inactive">inactive</option></select></label>
         <label className="full">Mô tả<textarea value={form.description} onChange={(e) => change('description', e.target.value)} rows="4" /></label>
+        <label className="full">Mô tả (English)<textarea value={form.descriptionEn} onChange={(e) => change('descriptionEn', e.target.value)} rows="4" /></label>
         <label className="full">Ảnh danh mục<input value={form.image} onChange={(e) => change('image', e.target.value)} placeholder="https://..." /></label>
         <label className="full">Ảnh riêng trên trang chủ<input value={form.homeImage} onChange={(e) => change('homeImage', e.target.value)} placeholder="https://... ảnh cây trồng, nhà kính, vườn xanh..." /><small className="muted">Ưu tiên ảnh thiên nhiên và cây trồng; để trống sẽ dùng ảnh danh mục.</small></label>
         {editingId && <div className="full hint">Số sản phẩm: {byId[editingId]?.productCount ?? 0}. Giá trị này do backend quản lý và không cho nhập tay.</div>}

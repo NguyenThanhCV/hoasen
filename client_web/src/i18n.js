@@ -16,15 +16,17 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
+    fallbackLng: "vi",
+    supportedLngs: ["vi", "en"],
+    nonExplicitSupportedLngs: true,
     detection: {
-      order: ["querystring", "cookie", "localStorage", "navigate"],
+      order: ["querystring", "localStorage", "cookie", "navigator"],
       lookupQuerystring: "lng",
       lookupCookie: "lang",
       lookupLocalStorage: "lang",
-      caches: ["localStorage", "cookie"],
+      caches: ["localStorage"],
     },
-    lng: "vi",
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false,
     },

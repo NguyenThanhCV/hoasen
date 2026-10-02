@@ -3,9 +3,9 @@ import {Page,Btn,Danger,Modal} from '../components/UI';
 import {coupons} from '../api';
 import {fmtDate,fmtMoney} from '../utils/helpers';
 
-const empty={code:'',name:'',type:'percentage',value:'',minOrderValue:'',maxDiscount:'',usageLimit:'',usageLimitPerUser:'',startDate:'',endDate:'',status:'active'};
+const empty={code:'',name:'',nameEn:'',type:'percentage',value:'',minOrderValue:'',maxDiscount:'',usageLimit:'',usageLimitPerUser:'',startDate:'',endDate:'',status:'active'};
 const inputDate=v=>v?new Date(v).toISOString().slice(0,16):'';
-const payload=f=>({code:String(f.code||'').trim().toUpperCase(),name:String(f.name||'').trim(),type:f.type,value:Number(f.value)||0,minOrderValue:Number(f.minOrderValue)||0,maxDiscount:Number(f.maxDiscount)||0,usageLimit:Number(f.usageLimit)||0,usageLimitPerUser:Number(f.usageLimitPerUser)||0,startDate:f.startDate||null,endDate:f.endDate||null,status:f.status||'active'});
+const payload=f=>({code:String(f.code||'').trim().toUpperCase(),name:String(f.name||'').trim(),nameEn:String(f.nameEn||'').trim(),type:f.type,value:Number(f.value)||0,minOrderValue:Number(f.minOrderValue)||0,maxDiscount:Number(f.maxDiscount)||0,usageLimit:Number(f.usageLimit)||0,usageLimitPerUser:Number(f.usageLimitPerUser)||0,startDate:f.startDate||null,endDate:f.endDate||null,status:f.status||'active'});
 const statusLabel={active:'Đang hoạt động',inactive:'Tắt',pending:'Chờ',expired:'Hết hạn'};
 export default function CouponsPage(){
  const [rows,setRows]=useState([]),[open,setOpen]=useState(false),[editing,setEditing]=useState(null),[f,setF]=useState(empty),[q,setQ]=useState(''),[loading,setLoading]=useState(false),[error,setError]=useState('');
@@ -24,6 +24,7 @@ export default function CouponsPage(){
   {open&&<Modal title={editing?'Sửa mã giảm giá':'Tạo mã giảm giá'} onClose={()=>setOpen(false)}><div className="formgrid coupon-form">
    <label>Mã giảm giá<input value={f.code} onChange={e=>setF({...f,code:e.target.value.toUpperCase()})} placeholder="VD: SALE20" maxLength={30}/></label>
    <label>Tên chương trình<input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="Giảm 20% đơn hàng"/></label>
+   <label>Tên chương trình (English)<input value={f.nameEn} onChange={e=>setF({...f,nameEn:e.target.value})} placeholder="20% off your order"/></label>
    <label>Kiểu giảm<select value={f.type} onChange={e=>setF({...f,type:e.target.value})}><option value="percentage">Giảm theo %</option><option value="fixed">Giảm số tiền</option></select></label>
    <label>Giá trị giảm<input type="number" min="0" value={f.value} onChange={e=>setF({...f,value:e.target.value})}/>{f.type==='percentage'&&<small>Tối đa 100%</small>}</label>
    <label>Đơn tối thiểu<input type="number" min="0" value={f.minOrderValue} onChange={e=>setF({...f,minOrderValue:e.target.value})}/></label>

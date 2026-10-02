@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Page, Table, Btn, Danger, Money } from "../components/UI";
 import { products, variants } from "../api";
 import { one, unwrap, idOf } from "../utils/helpers";
+import Media from "../components/Media";
 
 const id = (v) => String(v?._id || v?.id || v || "");
 
@@ -277,7 +278,7 @@ export default function ProductDetail() {
     {loading ? <div className="panel">Đang tải sản phẩm...</div> : <>
       <section className="product-overview panel">
         <div className="product-hero">
-          {productThumb ? <img className="product-hero-image" src={productThumb} alt="" /> : <div className="product-hero-image product-hero-placeholder">{String(product?.name || "SP").slice(0,2).toUpperCase()}</div>}
+          {product?.video || productThumb ? <Media className="product-hero-image" src={product?.video || productThumb} alt={product?.name || ""} /> : <div className="product-hero-image product-hero-placeholder">{String(product?.name || "SP").slice(0,2).toUpperCase()}</div>}
           <div className="product-hero-info">
             <div className="product-title-line">
               <h2>{product?.name || "Sản phẩm"}</h2>
@@ -320,7 +321,7 @@ export default function ProductDetail() {
             const image = v.thumbnail || v.images?.[0];
             return <div className={`variant-card ${v.active === false ? "is-inactive" : ""}`} key={id(v) || i}>
               <div className="variant-card-top">
-                {image ? <img src={image} alt="" /> : <div className="variant-image-placeholder">SP</div>}
+                {image ? <Media className="variant-admin-image" src={image} alt={product?.name || ""} /> : <div className="variant-image-placeholder">SP</div>}
                 <div className="variant-card-title">
                   <div className="variant-attributes">{attrs(v).length ? attrs(v).map(([k,x]) => <span key={k}><b>{k}</b>{x}</span>) : <span>Mặc định</span>}</div>
                   <b className="variant-sku">{v.sku || "Chưa có SKU"}</b>

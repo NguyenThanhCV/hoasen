@@ -5,7 +5,7 @@ import { categories, brands, products, variants } from "../api";
 import { one, unwrap, idOf, err } from "../utils/helpers";
 
 const EMPTY_PRODUCT = {
-  name: "", slug: "", shortDescription: "", description: "", category: "", brand: "",
+  name: "", nameEn: "", slug: "", shortDescription: "", shortDescriptionEn: "", description: "", descriptionEn: "", category: "", brand: "",
   sku: "", barcode: "", thumbnail: "", images: "", video: "", status: "active",
   featured: false, isNew: true, isBestSeller: false, isOnSale: false,
   metaTitle: "", metaDescription: "", metaKeywords: ""
@@ -113,7 +113,17 @@ export default function ProductForm() {
               if (value && !attrMap.get(name).includes(String(value))) attrMap.get(name).push(String(value));
             });
           });
-          setAttributes([...attrMap.entries()].map(([name, values]) => ({ name, values, input: "" })));
+          const attributeTranslations = p.attributeTranslations || [];
+          setAttributes([...attrMap.entries()].map(([name, values]) => {
+            const translated = attributeTranslations.find((item) => item.name === name) || {};
+            return {
+              name,
+              nameEn: translated.nameEn || "",
+              values,
+              valuesEn: Object.fromEntries((translated.values || []).map((item) => [item.value, item.valueEn || ""])),
+              input: "",
+            };
+          }));
           setVariantRows(rows.length ? rows : [emptyVariant()]);
           setForm({
             ...EMPTY_PRODUCT, ...p,
@@ -133,7 +143,7 @@ export default function ProductForm() {
   const addAttribute = (name = "") => {
     const clean = name.trim();
     if (!clean || attributes.some(a => a.name.toLowerCase() === clean.toLowerCase())) return;
-    setAttributes(x => [...x, { name: clean, values: [], input: "" }]);
+    setAttributes(x => [...x, { name: clean, nameEn: "", values: [], valuesEn: {}, input: "" }]);
   };
   const updateAttribute = (index, patch) => setAttributes(x => x.map((a, i) => i === index ? { ...a, ...patch } : a));
   const removeAttribute = (index) => {
@@ -179,7 +189,20 @@ export default function ProductForm() {
           .map(a => [a.name.trim(), a.values.map(v => String(v).trim()).filter(Boolean)])
       )
     };
+    data.attributeTranslations = attributes
+      .filter((attribute) => attribute.name.trim())
+      .map((attribute) => ({
+        name: attribute.name.trim(),
+        nameEn: String(attribute.nameEn || "").trim(),
+        values: attribute.values.map((value) => ({
+          value: String(value).trim(),
+          valueEn: String(attribute.valuesEn?.[value] || "").trim(),
+        })).filter((item) => item.value),
+      }));
     if (form.shortDescription.trim()) data.shortDescription = form.shortDescription.trim();
+    data.nameEn = form.nameEn.trim();
+    data.shortDescriptionEn = form.shortDescriptionEn.trim();
+    data.descriptionEn = form.descriptionEn;
     if (form.description.trim()) data.description = form.description;
     if (form.brand) data.brand = form.brand;
     if (form.sku.trim()) data.sku = form.sku.trim();
@@ -377,13 +400,16 @@ export default function ProductForm() {
         <div className="section-head"><div><h2>1. Thông tin sản phẩm</h2><p className="muted">Thông tin dùng chung cho toàn bộ sản phẩm.</p></div></div>
         <div className="formgrid">
           <label className={fieldErrors.name ? "has-error" : ""}>Tên sản phẩm *<input required value={form.name} onChange={e => setForm(x => ({ ...x, name: e.target.value, slug: (!edit && !slugTouched) ? slugify(e.target.value) : x.slug }))} placeholder="Ví dụ: Áo thun nam cotton" />{fieldErrors.name && <small className="field-error">{fieldErrors.name}</small>}</label>
+          <label>Tên sản phẩm (English)<input value={form.nameEn} onChange={e => set("nameEn", e.target.value)} placeholder="Product name in English" /></label>
           <label>Slug<input value={form.slug} onChange={e => { setSlugTouched(true); set("slug", e.target.value); }} placeholder="Tự tạo nếu bỏ trống" /></label>
           <label className={fieldErrors.category ? "has-error" : ""}>Danh mục *<select value={form.category} onChange={e => set("category", e.target.value)}><option value="">-- Chọn danh mục --</option>{categoriesList.map(c => <option key={idOf(c)} value={idOf(c)}>{c.name}</option>)}</select>{fieldErrors.category && <small className="field-error">{fieldErrors.category}</small>}</label>
           <label>Thương hiệu<select value={form.brand} onChange={e => set("brand", e.target.value)}><option value="">-- Không chọn --</option>{brandsList.map(b => <option key={idOf(b)} value={idOf(b)}>{b.name}</option>)}</select></label>
           <label>Mã sản phẩm (SKU chung)<input value={form.sku} onChange={e => set("sku", e.target.value)} placeholder="Không bắt buộc" /></label>
           <label>Barcode chung<input value={form.barcode} onChange={e => set("barcode", e.target.value)} placeholder="Không bắt buộc" /></label>
           <label className="full">Mô tả ngắn<textarea value={form.shortDescription} onChange={e => set("shortDescription", e.target.value)} rows="3" placeholder="Mô tả ngắn hiển thị trong danh sách/sàn" /></label>
+          <label className="full">Mô tả ngắn (English)<textarea value={form.shortDescriptionEn} onChange={e => set("shortDescriptionEn", e.target.value)} rows="3" placeholder="Short description in English" /></label>
           <label className="full">Mô tả chi tiết<textarea value={form.description} onChange={e => set("description", e.target.value)} rows="6" placeholder="Thông tin, công dụng, chất liệu, bảo hành..." /></label>
+          <label className="full">Mô tả chi tiết (English)<textarea value={form.descriptionEn} onChange={e => set("descriptionEn", e.target.value)} rows="6" placeholder="Product details in English" /></label>
         </div>
       </div>
 
@@ -392,8 +418,8 @@ export default function ProductForm() {
         <div className="preset-row">{ATTR_PRESETS.map(name => <button type="button" className="preset" key={name} onClick={() => addAttribute(name)}>+ {name}</button>)}<button type="button" className="preset" onClick={() => { const name = window.prompt("Tên thuộc tính mới:"); if (name) addAttribute(name); }}>+ Thuộc tính khác</button></div>
         {!attributes.length && <div className="empty">Chưa có phân loại. Sản phẩm sẽ dùng 1 Variant mặc định.</div>}
         {attributes.map((a, i) => <div className="attribute-row" key={a.name}>
-          <div className="attribute-title"><input value={a.name} onChange={e => updateAttribute(i, { name: e.target.value })} /></div>
-          <div className="attribute-values"><div className="value-input"><input value={a.input} onChange={e => updateAttribute(i, { input: e.target.value })} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addValue(i); } }} placeholder="Nhập giá trị rồi Enter" /><Btn type="button" onClick={() => addValue(i)}>Thêm</Btn></div><div className="chips">{a.values.map(v => <span className="chip" key={v}>{v}<button type="button" onClick={() => removeValue(i, v)}>×</button></span>)}</div></div>
+          <div className="attribute-title"><input value={a.name} onChange={e => updateAttribute(i, { name: e.target.value })} placeholder="Tên thuộc tính (Tiếng Việt)" /><input value={a.nameEn || ""} onChange={e => updateAttribute(i, { nameEn: e.target.value })} placeholder="Attribute name (English)" /></div>
+          <div className="attribute-values"><div className="value-input"><input value={a.input} onChange={e => updateAttribute(i, { input: e.target.value })} onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addValue(i); } }} placeholder="Nhập giá trị rồi Enter" /><Btn type="button" onClick={() => addValue(i)}>Thêm</Btn></div><div className="chips">{a.values.map(v => <span className="chip" key={v}>{v}<input aria-label={`English translation for ${v}`} value={a.valuesEn?.[v] || ""} onChange={e => updateAttribute(i, { valuesEn: { ...(a.valuesEn || {}), [v]: e.target.value } })} placeholder="English" /><button type="button" onClick={() => removeValue(i, v)}>×</button></span>)}</div></div>
           <button type="button" className="ghost remove-attr" onClick={() => removeAttribute(i)}>×</button>
         </div>)}
         <div className="builder-actions"><span className="hint">{generatedCombos.length} tổ hợp Variant sẽ được tạo.</span><Btn type="button" onClick={generateVariants}>Tạo / cập nhật danh sách Variant</Btn></div>
@@ -416,7 +442,7 @@ export default function ProductForm() {
           <td><input value={row.barcode} placeholder="Không bắt buộc" onChange={e => updateVariant(i, { barcode: e.target.value })} /></td>
           <td><input type="number" min="0" value={row.weight} placeholder="g" onChange={e => updateVariant(i, { weight: e.target.value })} /></td>
           <td><div className="dimension-inputs"><input type="number" min="0" placeholder="D" value={row.length} onChange={e => updateVariant(i, { length: e.target.value })}/><input type="number" min="0" placeholder="R" value={row.width} onChange={e => updateVariant(i, { width: e.target.value })}/><input type="number" min="0" placeholder="C" value={row.height} onChange={e => updateVariant(i, { height: e.target.value })}/></div></td>
-          <td><input value={row.thumbnail} placeholder="URL ảnh" onChange={e => updateVariant(i, { thumbnail: e.target.value })} /></td>
+          <td><input value={row.thumbnail} placeholder="URL ảnh/video" onChange={e => updateVariant(i, { thumbnail: e.target.value })} /></td>
           <td><input type="checkbox" checked={row.active} onChange={e => updateVariant(i, { active: e.target.checked })} /></td>
           <td><button type="button" className="ghost remove-attr" disabled={variantRows.length <= 1} onClick={() => removeVariant(i)}>×</button></td>
         </tr>)}</tbody></table></div>

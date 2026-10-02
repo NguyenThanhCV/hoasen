@@ -1,11 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import {
   PhoneOutlined,
   MailOutlined,
   EnvironmentOutlined,
   FacebookOutlined,
   ClockCircleOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
+import { Button, Dropdown, Menu } from "antd";
 
 import "./index.css";
 
@@ -13,6 +17,16 @@ const storePhone = process.env.REACT_APP_STORE_PHONE || "098 357 1112";
 const storeEmail = process.env.REACT_APP_STORE_EMAIL || "vattunhakinhhoasen@gmail.com";
 
 const PreHeader = () => {
+  const { t } = useTranslation();
+  const activeLanguage = i18n.resolvedLanguage || i18n.language || "vi";
+  const languageCode = activeLanguage.toLowerCase().startsWith("en") ? "en" : "vi";
+  const languageMenu = (
+    <Menu selectedKeys={[languageCode]} onClick={({ key }) => i18n.changeLanguage(key)}>
+      <Menu.Item key="vi">🇻🇳 {t("Vietnamese")}</Menu.Item>
+      <Menu.Item key="en">🇬🇧 {t("English")}</Menu.Item>
+    </Menu>
+  );
+
   return (
     <div className="pre-header">
       <div className="pre-header-container">
@@ -29,7 +43,7 @@ const PreHeader = () => {
             </span>
 
             <span className="pre-header-text">
-              <span className="contact-label">Hotline</span>
+              <span className="contact-label">{t("Hotline")}</span>
 
               <strong>{storePhone}</strong>
             </span>
@@ -49,7 +63,7 @@ const PreHeader = () => {
             </span>
 
             <span className="pre-header-text">
-              <span className="contact-label">Email</span>
+              <span className="contact-label">{t("Email")}</span>
 
               <strong>{storeEmail}</strong>
             </span>
@@ -67,9 +81,9 @@ const PreHeader = () => {
             </span>
 
             <span className="pre-header-text">
-              <span className="contact-label">Địa chỉ công ty</span>
+              <span className="contact-label">{t("CompanyAddress")}</span>
 
-              <strong>Xem trên Google Maps ↗</strong>
+              <strong>{t("ViewGoogleMaps")}</strong>
             </span>
           </a>
         </div>
@@ -84,7 +98,7 @@ const PreHeader = () => {
           <div className="pre-header-message">
             <ClockCircleOutlined />
 
-            <span>Vật tư nhà kính Hoa Sen đồng hành cùng nông dân Việt</span>
+            <span>{t("StoreTagline")}</span>
           </div>
 
           {/* DIVIDER */}
@@ -101,6 +115,12 @@ const PreHeader = () => {
             <a href={process.env.REACT_APP_TIKTOK_URL || "#"} target="_blank" rel="noreferrer" aria-label="TikTok Nhà kính Lâm Đồng" title="TikTok Hoa Sen" className="pre-header-tiktok">
               ♪
             </a>
+
+            <Dropdown overlay={languageMenu} placement="bottomRight" trigger={["click"]}>
+              <Button className="pre-header-language" type="text" icon={<GlobalOutlined />} aria-label={t("ChooseLanguage")}>
+                {languageCode.toUpperCase()}
+              </Button>
+            </Dropdown>
           </div>
         </div>
       </div>

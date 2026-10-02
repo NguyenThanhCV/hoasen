@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Page, Table, Btn, Danger, Modal } from '../components/UI';
 import { brands } from '../api';
+import Media from '../components/Media';
 
 const empty = {
   name: '',
+  nameEn: '',
   slug: '',
   logo: '',
   description: '',
+  descriptionEn: '',
   website: '',
   sortOrder: 1,
   status: 'active',
@@ -93,9 +96,11 @@ export default function BrandsPage() {
       const z = unwrap(r) || row;
       setForm({
         name: z.name || '',
+        nameEn: z.nameEn || '',
         slug: z.slug || '',
         logo: z.logo || '',
         description: z.description || '',
+        descriptionEn: z.descriptionEn || '',
         website: z.website || '',
         sortOrder: Math.max(1, Number(z.sortOrder ?? 1)),
         status: z.status || 'active',
@@ -104,9 +109,11 @@ export default function BrandsPage() {
     } catch (e) {
       setForm({
         name: row.name || '',
+        nameEn: row.nameEn || '',
         slug: row.slug || '',
         logo: row.logo || '',
         description: row.description || '',
+        descriptionEn: row.descriptionEn || '',
         website: row.website || '',
         sortOrder: Math.max(1, Number(row.sortOrder ?? 1)),
         status: row.status || 'active',
@@ -155,9 +162,11 @@ export default function BrandsPage() {
 
         const r = await brands.create({
           name: form.name.trim(),
+          nameEn: form.nameEn.trim(),
           slug,
           logo: form.logo.trim(),
           description: form.description.trim(),
+          descriptionEn: form.descriptionEn.trim(),
           website: form.website.trim(),
           sortOrder: position,
           status: form.status
@@ -166,9 +175,11 @@ export default function BrandsPage() {
       } else {
         await brands.update(editingId, {
           name: form.name.trim(),
+          nameEn: form.nameEn.trim(),
           slug,
           logo: form.logo.trim(),
           description: form.description.trim(),
+          descriptionEn: form.descriptionEn.trim(),
           website: form.website.trim(),
           sortOrder: Math.max(1, Number(form.sortOrder) || 1),
           status: form.status
@@ -236,7 +247,7 @@ export default function BrandsPage() {
       <Table rows={filtered} columns={[
         { key: 'sortOrder', label: 'STT', render: r => <b>{r.sortOrder ?? '—'}</b> },
         { key: 'logo', label: 'Logo', render: r => r.logo
-          ? <img src={r.logo} alt={r.name || ''} style={{ width: 42, height: 42, objectFit: 'contain', borderRadius: 6 }} />
+          ? <Media src={r.logo} alt={r.name || ''} className="brand-admin-logo" />
           : '—' },
         { key: 'name', label: 'Thương hiệu', render: r => <b>{r.name}</b> },
         { key: 'slug', label: 'Slug' },
@@ -255,6 +266,9 @@ export default function BrandsPage() {
       <div className="formgrid">
         <label>Tên thương hiệu *
           <input value={form.name} onChange={e => change('name', e.target.value)} />
+        </label>
+        <label>Tên thương hiệu (English)
+          <input value={form.nameEn} onChange={e => change('nameEn', e.target.value)} placeholder="Brand name in English" />
         </label>
 
         <label>Slug
@@ -295,6 +309,9 @@ export default function BrandsPage() {
 
         <label className="full">Mô tả
           <textarea value={form.description} onChange={e => change('description', e.target.value)} rows="4" />
+        </label>
+        <label className="full">Mô tả (English)
+          <textarea value={form.descriptionEn} onChange={e => change('descriptionEn', e.target.value)} rows="4" placeholder="Brand description in English" />
         </label>
 
         <div className="full">

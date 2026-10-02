@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createStructuredSelector } from "reselect";
+import Media from "../../Components/Media";
+import { localized } from "../../utils/localized";
 
 import {
   getCategoriesRequestAction,
@@ -32,6 +35,8 @@ const Categories = ({
   getCategories,
   clearCategories,
 }) => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage || i18n.language;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -55,7 +60,7 @@ const Categories = ({
     return () => {
       clearCategories();
     };
-  }, [query.page, query.limit]);
+  }, [query.page, query.limit, getCategories, clearCategories]);
 
   const handleChangePage = (page) => {
     if (page < 1 || page > totalPages || page === currentPage) {
@@ -174,19 +179,17 @@ const Categories = ({
         <div className="categories-hero-content">
           <div className="categories-hero-badge">
             <span className="hero-badge-dot" />
-            KHÁM PHÁ SẢN PHẨM
+            {t("ExploreProductsKicker")}
           </div>
 
-          <h1>Danh mục sản phẩm</h1>
+          <h1>{t("ProductCategories")}</h1>
 
-          <p>
-            Tìm nhanh nhóm vật tư cho nhà kính, hệ thống tưới và chăm sóc cây trồng.
-          </p>
+          <p>{t("ChooseCategoryDescription")}</p>
 
           <div className="categories-hero-stats">
             <div className="hero-stat">
               <strong>{total}</strong>
-              <span>Danh mục</span>
+              <span>{t("CategoryCount")}</span>
             </div>
           </div>
         </div>
@@ -199,16 +202,16 @@ const Categories = ({
         {/* HEADER */}
         <div className="categories-heading">
           <div>
-            <span className="section-eyebrow">SHOP BY CATEGORY</span>
+            <span className="section-eyebrow">{t("ShopByCategory")}</span>
 
-            <h2>Tất cả danh mục</h2>
+            <h2>{t("AllCategories")}</h2>
 
-            <p>Chọn một danh mục để xem các sản phẩm đang được bán.</p>
+            <p>{t("ChooseCategoryDescription")}</p>
           </div>
 
           <div className="category-result-count">
             <span>{total}</span>
-            <small>Danh mục</small>
+            <small>{t("CategoryCount")}</small>
           </div>
         </div>
 
@@ -240,9 +243,9 @@ const Categories = ({
           <div className="categories-empty">
             <div className="empty-icon">⌂</div>
 
-            <h3>Chưa có danh mục</h3>
+            <h3>{t("NoCategories")}</h3>
 
-            <p>Hiện tại chưa có danh mục sản phẩm nào đang hoạt động.</p>
+            <p>{t("NoCategoriesDescription")}</p>
 
             <button
               type="button"
@@ -253,7 +256,7 @@ const Categories = ({
                   status: "active",
                 })
               }>
-              Thử lại
+              {t("TryAgain")}
             </button>
           </div>
         )}
@@ -273,10 +276,14 @@ const Categories = ({
                   onClick={() => handleCategoryClick(category)}>
                   {/* IMAGE */}
                   <div className="category-image-wrapper">
-                    <img
+                    <Media
                       src={getCategoryImage(category)}
-                      alt={category.name}
-                      className="category-image"
+                      alt={localized(category, "name", lang)}
+                      imageClassName="category-image"
+                      controls={false}
+                      muted
+                      loop
+                      autoPlay
                     />
 
                     <div className="category-image-overlay" />
@@ -286,7 +293,7 @@ const Categories = ({
                     </span>
 
                     {category.status === "active" && (
-                      <span className="category-status">Đang bán</span>
+                      <span className="category-status">{t("SellingNow")}</span>
                     )}
 
                     <div className="category-arrow">→</div>
@@ -295,18 +302,17 @@ const Categories = ({
                   {/* CONTENT */}
                   <div className="category-card-content">
                     <div className="category-card-top">
-                      <h3>{category.name}</h3>
+                      <h3>{localized(category, "name", lang)}</h3>
 
                       <span className="category-level">
                         {category.level === 0
-                          ? "Danh mục chính"
-                          : `Cấp ${category.level}`}
+                          ? t("MainCategory")
+                          : t("CategoryLevel", { level: category.level })}
                       </span>
                     </div>
 
                     <p className="category-description">
-                      {category.description ||
-                        "Khám phá các sản phẩm thuộc danh mục này."}
+                      {localized(category, "description", lang) || t("CategoryDescriptionFallback")}
                     </p>
 
                     <div className="category-card-footer">
@@ -317,7 +323,7 @@ const Categories = ({
                       </span>
 
                       <span className="category-explore">
-                        Xem sản phẩm
+                        {t("ViewProductsAction")}
                         <span>↗</span>
                       </span>
                     </div>
@@ -344,23 +350,23 @@ const Categories = ({
 
               <span>
                 {" "}
-                trong tổng số <strong>{total}</strong> danh mục
+                {t("CategoryResultsRange", { start: total === 0 ? 0 : (currentPage - 1) * currentLimit + 1, end: Math.min(currentPage * currentLimit, total), total })}
               </span>
             </div>
 
             <div className="category-limit">
-              <span>Hiển thị</span>
+              <span>{t("Display")}</span>
 
               <select value={currentLimit} onChange={handleChangeLimit}>
-                <option value="4">4 / trang</option>
+                <option value="4">4 {t("PerPage")}</option>
 
-                <option value="8">8 / trang</option>
+                <option value="8">8 {t("PerPage")}</option>
 
-                <option value="12">12 / trang</option>
+                <option value="12">12 {t("PerPage")}</option>
 
-                <option value="20">20 / trang</option>
+                <option value="20">20 {t("PerPage")}</option>
 
-                <option value="40">40 / trang</option>
+                <option value="40">40 {t("PerPage")}</option>
               </select>
             </div>
           </div>
@@ -403,10 +409,9 @@ const mapStateToProps = createStructuredSelector({
   pagination: selectCategoryPagination,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  getCategories: (payload) => dispatch(getCategoriesRequestAction(payload)),
-
-  clearCategories: () => dispatch(clearCategoriesAction()),
-});
+const mapDispatchToProps = {
+  getCategories: getCategoriesRequestAction,
+  clearCategories: clearCategoriesAction,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories);

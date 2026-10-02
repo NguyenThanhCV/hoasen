@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Row,
@@ -33,11 +34,14 @@ import { getVariantsService } from "../../api/apiVariant";
 import { getCategoriesService } from "../../api/apiCategory";
 import { getBrandsService } from "../../api/apiBrand";
 import { getWishlist, addWishlist, removeWishlist } from "../../api/shop";
+import { localized } from "../../utils/localized";
 import ProductCard from "./components/ProductCard";
 
 import "./style.css";
 
 const Products = ({ isLoading, products, pagination, getProducts }) => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage || i18n.language;
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -257,7 +261,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
 
   const handleWishlist = async (product) => {
     if (!localStorage.getItem("token")) {
-      message.info("Đăng nhập để lưu sản phẩm yêu thích.");
+      message.info(t("LoginToFavorite"));
       navigate("/login?next=/wishlist");
       return;
     }
@@ -267,14 +271,14 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
       if (wishlistIds.includes(id)) {
         await removeWishlist(id);
         setWishlistIds((current) => current.filter((item) => item !== id));
-        message.success("Đã bỏ khỏi danh sách yêu thích.");
+        message.success(t("RemovedFromFavorites"));
       } else {
         await addWishlist(id);
         setWishlistIds((current) => [...current, id]);
-        message.success("Đã lưu vào danh sách yêu thích.");
+        message.success(t("AddedToFavorites"));
       }
     } catch (error) {
-      message.error(error.response?.data?.message || "Không thể cập nhật danh sách yêu thích.");
+      message.error(error.response?.data?.message || t("FavoriteUpdateFailed"));
     } finally {
       setWishlistBusy("");
     }
@@ -293,11 +297,11 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
 
   const formatPrice = (price) => {
     if (price === undefined || price === null) {
-      return "Liên hệ";
+      return t("ContactForPrice");
     }
 
     if (Number(price) === 0) {
-      return "Liên hệ";
+      return t("ContactForPrice");
     }
 
     return new Intl.NumberFormat("vi-VN", {
@@ -321,6 +325,8 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
     if (product.images && product.images.length) {
       return product.images[0];
     }
+
+    if (product.video) return product.video;
 
     return process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
   };
@@ -419,9 +425,9 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
 
       <div className="products-header">
         <div className="products-title">
-          <h1>Sản phẩm</h1>
+          <h1>{t("Products")}</h1>
 
-          <p>Khám phá sản phẩm dành cho bạn</p>
+          <p>{t("ProductForYou")}</p>
         </div>
 
         <div className="products-search">
@@ -429,7 +435,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
             size="large"
             allowClear
             value={searchText}
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder={t("SearchProducts")}
             prefix={<SearchOutlined />}
             onChange={(event) => {
               setSearchText(event.target.value);
@@ -442,7 +448,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
             size="large"
             icon={<SearchOutlined />}
             onClick={handleSearch}>
-            Tìm kiếm
+            {t("SearchAction")}
           </Button>
         </div>
       </div>
@@ -455,35 +461,37 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
         <div className="products-result">
           {searchParams.get("search") ? (
             <>
-              Kết quả tìm kiếm cho{" "}
+              {t("SearchResultsFor")}{" "}
               <strong>"{searchParams.get("search")}"</strong>
             </>
           ) : (
-            <>Tất cả sản phẩm</>
+            <>{t("AllProducts")}</>
           )}
 
-          {total > 0 && <span> · {total} sản phẩm</span>}
+          {total > 0 && <span> · {total} {t("ProductCount")}</span>}
         </div>
 
       <div className="products-filter">
           <Select
-            allowClear
-            placeholder="Danh mục"
-            value={searchParams.get("category") || undefined}
-            onChange={(value) => setFilter("category", value)}
-            options={categoryOptions.map((category) => ({ value: category._id, label: category.name }))}
+            value={searchParams.get("category") || "__all_categories__"}
+            onChange={(value) => setFilter("category", value === "__all_categories__" ? undefined : value)}
+            options={[
+              { value: "__all_categories__", label: t("AllCategories") },
+              ...categoryOptions.map((category) => ({ value: category._id, label: localized(category, "name", lang) })),
+            ]}
             style={{ width: 175 }}
           />
           <Select
-            allowClear
-            placeholder="Thương hiệu"
-            value={searchParams.get("brand") || undefined}
-            onChange={(value) => setFilter("brand", value)}
-            options={brandOptions.map((brand) => ({ value: brand._id, label: brand.name }))}
+            value={searchParams.get("brand") || "__all_brands__"}
+            onChange={(value) => setFilter("brand", value === "__all_brands__" ? undefined : value)}
+            options={[
+              { value: "__all_brands__", label: t("AllBrands") },
+              ...brandOptions.map((brand) => ({ value: brand._id, label: localized(brand, "name", lang) })),
+            ]}
             style={{ width: 175 }}
           />
           <Checkbox checked={featured} onChange={handleFeatured}>
-            Sản phẩm nổi bật
+            {t("FeaturedProducts")}
           </Checkbox>
 
           <Select
@@ -496,19 +504,19 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
               {
                 value: "newest",
 
-                label: "Mới nhất",
+                label: t("Newest"),
               },
 
               {
                 value: "popular",
 
-                label: "Bán chạy",
+                label: t("BestSelling"),
               },
 
               {
                 value: "rating",
 
-                label: "Đánh giá cao",
+                label: t("HighestRated"),
               },
             ]}
           />
@@ -523,15 +531,15 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
         <div className="products-loading">
           <Spin size="large" />
 
-          <p>Đang tải sản phẩm...</p>
+          <p>{t("LoadingProducts")}</p>
         </div>
       ) : products.length === 0 ? (
         <div className="products-empty">
           <Empty
             description={
               searchParams.get("search")
-                ? "Không tìm thấy sản phẩm phù hợp"
-                : "Chưa có sản phẩm"
+                ? t("NoMatchingProducts")
+                : t("NoProductsYet")
             }
           />
         </div>
@@ -542,7 +550,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
             const availableStock = getAvailableStock(product);
             const priceInfo = getPriceInfo(product);
             const priceText = priceInfo.price == null
-              ? "Chưa có giá"
+              ? t("PriceUnavailable")
               : priceInfo.price === priceInfo.maxPrice
                 ? formatPrice(priceInfo.price)
                 : `${formatPrice(priceInfo.price)} – ${formatPrice(priceInfo.maxPrice)}`;

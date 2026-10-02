@@ -8,6 +8,7 @@ import Brands from "./PagesClient/Brands";
 import ProductDetail from "./PagesClient/ProductDetail";
 import InfoPages from "./PagesClient/InfoPages";
 import NewsPage, { NewsDetailPage } from "./PagesClient/News";
+import CouponsPage from "./PagesClient/Coupons";
 const routes = [
   {
     path: "/*",
@@ -24,6 +25,10 @@ const routes = [
   {
     path: "/products",
     component: () => <Products />,
+  },
+  {
+    path: "/coupons",
+    component: () => <CouponsPage />,
   },
   {
     path: "/categories",

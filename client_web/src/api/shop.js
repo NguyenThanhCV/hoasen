@@ -48,7 +48,7 @@ export const removeCartItem = (itemId) => request.delete(`/cart/items/${itemId}`
 export const clearCart = () => request.delete("/cart/clear").then(cartData);
 
 export const getAddresses = () => request.get("/addresses").then(unwrap);
-export const createAddress = (payload) => request.post("/addresses", payload).then(unwrap);
+export const createAddress = (payload) => request.post("/addresses", payload).then(unwrap).then(dataOf);
 export const updateAddress = (id, payload) => request.patch(`/addresses/${id}`, payload).then(unwrap);
 export const deleteAddress = (id) => request.delete(`/addresses/${id}`).then(unwrap);
 
@@ -66,5 +66,6 @@ export const readNotification = (id) => request.patch(`/notifications/${id}/read
 export const readAllNotifications = () => request.post("/notifications/read-all").then(unwrap);
 
 export const validateCoupon = (code) => request.get(`/coupons/code/${encodeURIComponent(code)}`).then(unwrap);
+export const getCoupons = (params = {}) => request.get("/coupons", { params }).then(unwrap);
 
 export { dataOf };

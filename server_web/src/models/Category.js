@@ -4,6 +4,7 @@ module.exports = mongoose.model(
   new mongoose.Schema(
     {
       name: { type: String, required: true, trim: true },
+      nameEn: { type: String, trim: true, default: "" },
       slug: {
         type: String,
         required: true,
@@ -12,6 +13,7 @@ module.exports = mongoose.model(
         lowercase: true,
       },
       description: String,
+      descriptionEn: { type: String, default: "" },
       image: String,
       // Optional image optimized for the storefront homepage category cards.
       homeImage: String,

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Page, Btn, Danger, Modal, Table } from "../components/UI";
+import Media from "../components/Media";
 import { newsArticles, newsCategories } from "../api";
 
 const unwrap = (response) => response?.data?.data ?? response?.data ?? response;
@@ -21,20 +22,26 @@ const dateInput = (value) =>
   value ? new Date(value).toISOString().slice(0, 16) : "";
 const emptyArticle = {
   title: "",
+  titleEn: "",
   slug: "",
   excerpt: "",
+  excerptEn: "",
   content: "",
+  contentEn: "",
   coverImage: "",
   category: "",
   tags: "",
+  tagsEn: "",
   status: "draft",
   publishedAt: "",
   readingMinutes: 3,
 };
 const emptyCategory = {
   name: "",
+  nameEn: "",
   slug: "",
   description: "",
+  descriptionEn: "",
   coverImage: "",
   sortOrder: 0,
   status: "active",
@@ -124,6 +131,7 @@ export default function NewsManagement() {
         ...value,
         category: idOf(value.category),
         tags: (value.tags || []).join(", "),
+        tagsEn: (value.tagsEn || []).join(", "),
         publishedAt: dateInput(value.publishedAt),
       });
     } catch (e) {
@@ -132,6 +140,7 @@ export default function NewsManagement() {
         ...item,
         category: idOf(item.category),
         tags: (item.tags || []).join(", "),
+        tagsEn: (item.tagsEn || []).join(", "),
         publishedAt: dateInput(item.publishedAt),
       });
       setError(e?.response?.data?.message || "Không tải được bài viết.");
@@ -175,12 +184,19 @@ export default function NewsManagement() {
       if (modal === "article") {
         const data = {
           title: form.title,
+          titleEn: form.titleEn || "",
           slug: slugify(form.slug || form.title),
           excerpt: form.excerpt,
+          excerptEn: form.excerptEn || "",
           content: form.content,
+          contentEn: form.contentEn || "",
           coverImage: form.coverImage || "",
           category: form.category,
           tags: String(form.tags || "")
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+          tagsEn: String(form.tagsEn || "")
             .split(",")
             .map((tag) => tag.trim())
             .filter(Boolean),
@@ -196,8 +212,10 @@ export default function NewsManagement() {
       } else {
         const data = {
           name: form.name,
+          nameEn: form.nameEn || "",
           slug: slugify(form.slug || form.name),
           description: form.description || "",
+          descriptionEn: form.descriptionEn || "",
           coverImage: form.coverImage || "",
           sortOrder: Number(form.sortOrder) || 0,
           status: form.status || "active",
@@ -252,7 +270,7 @@ export default function NewsManagement() {
       label: "Bài viết",
       render: (row) => (
         <div className="news-admin-title">
-          {row.coverImage && <img src={row.coverImage} alt="" />}
+          {row.coverImage && <Media className="news-admin-row-media" src={row.coverImage} alt="" />}
           <div>
             <b>{row.title}</b>
             <small>/{row.slug}</small>
@@ -444,6 +462,10 @@ export default function NewsManagement() {
                     }
                   />
                 </label>
+                <label className="full">
+                  Tiêu đề (English)
+                  <input maxLength={180} value={form.titleEn || ""} onChange={(e) => setForm({ ...form, titleEn: e.target.value })} />
+                </label>
                 <label>
                   Đường dẫn (slug) *
                   <input
@@ -453,6 +475,10 @@ export default function NewsManagement() {
                       setForm({ ...form, slug: slugify(e.target.value) })
                     }
                   />
+                </label>
+                <label className="full">
+                  Mô tả ngắn (English)
+                  <textarea maxLength={360} rows={3} value={form.excerptEn || ""} onChange={(e) => setForm({ ...form, excerptEn: e.target.value })} />
                 </label>
                 <label>
                   Danh mục *
@@ -472,6 +498,10 @@ export default function NewsManagement() {
                   </select>
                 </label>
                 <label className="full">
+                  Nội dung bài viết (English)
+                  <textarea rows={12} value={form.contentEn || ""} onChange={(e) => setForm({ ...form, contentEn: e.target.value })} placeholder="Enter the English article content." />
+                </label>
+                <label className="full">
                   Mô tả ngắn *
                   <textarea
                     required
@@ -482,6 +512,10 @@ export default function NewsManagement() {
                       setForm({ ...form, excerpt: e.target.value })
                     }
                   />
+                </label>
+                <label>
+                  Tên danh mục (English)
+                  <input maxLength={80} value={form.nameEn || ""} onChange={(e) => setForm({ ...form, nameEn: e.target.value })} />
                 </label>
                 <label className="full">
                   Nội dung bài viết *
@@ -496,7 +530,11 @@ export default function NewsManagement() {
                   />
                 </label>
                 <label className="full">
-                  Ảnh bìa (URL)
+                  Mô tả (English)
+                  <textarea rows={3} maxLength={240} value={form.descriptionEn || ""} onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })} />
+                </label>
+                <label className="full">
+                  Ảnh hoặc video bìa (URL)
                   <input
                     type="url"
                     value={form.coverImage || ""}
@@ -507,7 +545,7 @@ export default function NewsManagement() {
                   />
                 </label>
                 {form.coverImage && (
-                  <img
+                  <Media
                     className="news-admin-preview full"
                     src={form.coverImage}
                     alt="Xem trước ảnh bìa"
@@ -519,6 +557,14 @@ export default function NewsManagement() {
                     value={form.tags || ""}
                     onChange={(e) => setForm({ ...form, tags: e.target.value })}
                     placeholder="nhà kính, tưới nhỏ giọt"
+                  />
+                </label>
+                <label>
+                  Tags (English, phân cách bằng dấu phẩy)
+                  <input
+                    value={form.tagsEn || ""}
+                    onChange={(e) => setForm({ ...form, tagsEn: e.target.value })}
+                    placeholder="greenhouse, irrigation"
                   />
                 </label>
                 <label>

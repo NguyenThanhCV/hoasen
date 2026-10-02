@@ -52,14 +52,29 @@ const secondSlides = nonHomeRows.map((row, index) => ({
   sortOrder: 2,
 }));
 const allRows = [...rows, ...secondSlides];
+const englishBannerCopy = {
+  home: ["Greenhouse Solutions for Modern Farming", "From frames and greenhouse film to installation accessories, choose suitable supplies for a productive growing season.", "Explore products"],
+  products: ["Find Supplies for Your Project", "Browse greenhouse materials and growing supplies by category, brand, and specification.", "Browse categories"],
+  "product-detail": ["Need Advice for Your Garden?", "Share your measurements and requirements so our team can recommend a suitable option.", "Contact Hoa Sen"],
+  categories: ["Explore Greenhouse and Growing Supplies", "Find products for greenhouse structures, irrigation systems, and crop care.", "View products"],
+  brands: ["Trusted Brands for Your Garden", "Explore brands and products suited to your growing conditions.", "Shop now"],
+  news: ["Useful Knowledge for Every Growing Season", "Read practical advice on supplies, irrigation, and crop care.", "Read the latest"],
+  "news-detail": ["Find the Right Solution for Your Garden", "Explore related products and get advice from the Hoa Sen team.", "View products"],
+  about: ["Supporting Modern Growers", "Greenhouse supplies and growing solutions recommended for your needs.", "Explore products"],
+  contact: ["Talk with a Hoa Sen Specialist", "Share your project details for advice on suitable supplies and specifications.", "View products"],
+  faq: ["Shopping Help and Answers", "Learn how to choose products, place orders, and manage your account.", "Contact support"],
+  privacy: ["Your Information and Privacy", "Learn how account, address, and order information is used on this store.", "Contact us"],
+  terms: ["Clear Shopping Terms", "Review how products, orders, payment, and delivery work on this website.", "View products"],
+};
 
 async function run() {
   if (process.env.NODE_ENV === "production") throw new Error("Refusing to seed development banners into production.");
   await connectDB();
   for (const row of allRows) {
+    const [titleEn, descriptionEn, buttonTextEn] = englishBannerCopy[row.pageKey] || englishBannerCopy.home;
     await Banner.findOneAndUpdate(
       { seedKey: `default-${row.pageKey}-${row.sortOrder}` },
-      { $set: { ...row, altText: row.title, textPosition: "left", overlayOpacity: 0.48, status: "active", seedKey: `default-${row.pageKey}-${row.sortOrder}` } },
+      { $set: { ...row, nameEn: `${titleEn} | Hoa Sen`, eyebrowEn: "HOA SEN GREENHOUSE SUPPLIES", titleEn, descriptionEn, buttonTextEn, altText: row.title, altTextEn: titleEn, textPosition: "left", overlayOpacity: 0.48, status: "active", seedKey: `default-${row.pageKey}-${row.sortOrder}` } },
       { upsert: true, runValidators: true },
     );
   }

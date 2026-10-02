@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import { connect } from "react-redux";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { createStructuredSelector } from "reselect";
+import Media from "../../Components/Media";
+import { localized } from "../../utils/localized";
 
 import { getBrandsRequestAction, clearBrandsAction } from "./stores/actions";
 
@@ -27,6 +30,8 @@ const getQueryParams = (search) => {
 };
 
 const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage || i18n.language;
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -54,7 +59,7 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
     return () => {
       clearBrands();
     };
-  }, [query.page, query.limit]);
+  }, [query.page, query.limit, getBrands, clearBrands]);
 
   const handleChangePage = (page) => {
     if (page < 1 || page > totalPages || page === currentPage) {
@@ -182,21 +187,20 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
         <div className="brands-hero-content">
           <div className="brands-hero-badge">
             <span className="brands-badge-dot" />
-            THƯƠNG HIỆU
+            {t("ShopByBrand")}
           </div>
 
-          <h1>Thương hiệu</h1>
+          <h1>{t("Brands")}</h1>
 
           <p>
-            Những thương hiệu đồng hành cùng nhà vườn, với vật tư phù hợp cho
-            từng khu vườn và mùa vụ.
+            {t("ChooseBrandDescription")}
           </p>
 
           <div className="brands-hero-stats">
             <div className="brand-hero-stat">
               <strong>{total}</strong>
 
-              <span>Thương hiệu</span>
+              <span>{t("BrandLabel")}</span>
             </div>
 
           </div>
@@ -210,17 +214,17 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
       <main className="brands-container">
         <div className="brands-heading">
           <div>
-            <span className="brands-eyebrow">EXPLORE BRANDS</span>
+            <span className="brands-eyebrow">{t("ShopByBrand")}</span>
 
-            <h2>Tất cả thương hiệu</h2>
+            <h2>{t("AllBrands")}</h2>
 
-            <p>Chọn thương hiệu để xem các sản phẩm đang được bán.</p>
+            <p>{t("ChooseBrandDescription")}</p>
           </div>
 
           <div className="brand-result-count">
             <span>{total}</span>
 
-            <small>Thương hiệu</small>
+            <small>{t("BrandLabel")}</small>
           </div>
         </div>
 
@@ -256,9 +260,9 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
           <div className="brands-empty">
             <div className="brands-empty-icon">B</div>
 
-            <h3>Chưa có thương hiệu</h3>
+            <h3>{t("NoBrands")}</h3>
 
-            <p>Hiện tại chưa có thương hiệu nào đang hoạt động.</p>
+            <p>{t("NoBrandsDescription")}</p>
 
             <button
               type="button"
@@ -269,7 +273,7 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
                   status: "active",
                 })
               }>
-              Thử lại
+              {t("TryAgain")}
             </button>
           </div>
         )}
@@ -291,10 +295,14 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
                   {/* LOGO */}
 
                   <div className="brand-logo-wrapper">
-                    <img
+                    <Media
                       src={getBrandLogo(brand)}
-                      alt={brand.name}
-                      className="brand-logo"
+                      alt={localized(brand, "name", lang)}
+                      imageClassName="brand-logo"
+                      controls={false}
+                      muted
+                      loop
+                      autoPlay
                     />
 
                     <span className="brand-number">
@@ -302,7 +310,7 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
                     </span>
 
                     {brand.status === "active" && (
-                      <span className="brand-status">Đang bán</span>
+                      <span className="brand-status">{t("SellingNow")}</span>
                     )}
 
                     <div className="brand-logo-overlay" />
@@ -314,12 +322,11 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
 
                   <div className="brand-card-content">
                     <div className="brand-card-top">
-                      <h3>{brand.name}</h3>
+                      <h3>{localized(brand, "name", lang)}</h3>
                     </div>
 
                     <p className="brand-description">
-                      {brand.description ||
-                        "Khám phá các sản phẩm thuộc thương hiệu này."}
+                      {localized(brand, "description", lang) || t("BrandDescriptionFallback")}
                     </p>
 
                     <div className="brand-card-footer">
@@ -335,12 +342,12 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
                         </button>
                       ) : (
                         <span className="brand-website disabled">
-                          Thương hiệu
+                          {t("BrandLabel")}
                         </span>
                       )}
 
                       <span className="brand-explore">
-                        Xem sản phẩm
+                        {t("ViewProductsAction")}
                         <span>→</span>
                       </span>
                     </div>
@@ -368,23 +375,23 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
 
               <span>
                 {" "}
-                trong tổng số <strong>{total}</strong> thương hiệu
+                {t("ResultsRange", { start: total === 0 ? 0 : (currentPage - 1) * currentLimit + 1, end: Math.min(currentPage * currentLimit, total), total })}
               </span>
             </div>
 
             <div className="brand-limit">
-              <span>Hiển thị</span>
+              <span>{t("Display")}</span>
 
               <select value={currentLimit} onChange={handleChangeLimit}>
-                <option value="4">4 / trang</option>
+                <option value="4">4 {t("PerPage")}</option>
 
-                <option value="8">8 / trang</option>
+                <option value="8">8 {t("PerPage")}</option>
 
-                <option value="12">12 / trang</option>
+                <option value="12">12 {t("PerPage")}</option>
 
-                <option value="20">20 / trang</option>
+                <option value="20">20 {t("PerPage")}</option>
 
-                <option value="40">40 / trang</option>
+                <option value="40">40 {t("PerPage")}</option>
               </select>
             </div>
           </div>
@@ -426,10 +433,9 @@ const mapStateToProps = createStructuredSelector({
   pagination: selectBrandPagination,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  getBrands: (payload) => dispatch(getBrandsRequestAction(payload)),
-
-  clearBrands: () => dispatch(clearBrandsAction()),
-});
+const mapDispatchToProps = {
+  getBrands: getBrandsRequestAction,
+  clearBrands: clearBrandsAction,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Brands);
