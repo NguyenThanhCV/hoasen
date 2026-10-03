@@ -9,4 +9,6 @@ export const orderItems=crud('/order-items');
 export const newsArticles={list:p=>request.get('/admin/newsArticles',{params:p}),get:id=>request.get(`/admin/newsArticles/${id}`),create:d=>request.post('/news',d),update:(id,d)=>request.patch(`/news/${id}`,d),remove:id=>request.delete(`/news/${id}`)};
 export const newsCategories={list:p=>request.get('/admin/newsCategories',{params:p}),get:id=>request.get(`/admin/newsCategories/${id}`),create:d=>request.post('/news-categories',d),update:(id,d)=>request.patch(`/news-categories/${id}`,d),remove:id=>request.delete(`/news-categories/${id}`)};
 export const banners=crud('/admin/banners');
+export const couponRedemptions=crud('/admin/couponRedemptions');
+export const promotions=crud('/admin/promotions');
 export const productReviews={list:(product,p)=>request.get(`/reviews/product/${product}`,{params:p}),get:id=>request.get(`/reviews/${id}`),create:d=>request.post('/reviews',d),update:(id,d)=>request.patch(`/reviews/${id}`,d),moderate:(id,d)=>request.patch(`/reviews/${id}/moderate`,d),remove:id=>request.delete(`/reviews/${id}`)};

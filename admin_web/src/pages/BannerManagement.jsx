@@ -5,11 +5,13 @@ import { banners } from '../api';
 
 const unwrap = (response) => response?.data?.data ?? response?.data ?? response;
 const pageOptions = [
-  ['home','Trang chủ'],['products','Danh sách sản phẩm'],['product-detail','Chi tiết sản phẩm'],['categories','Danh mục'],['brands','Thương hiệu'],
-  ['news','Tin tức'],['news-detail','Chi tiết bài viết'],['about','Giới thiệu'],['contact','Liên hệ'],['faq','Câu hỏi thường gặp'],
-  ['privacy','Quyền riêng tư'],['terms','Điều khoản'],['cart','Giỏ hàng'],['checkout','Thanh toán'],['orders','Đơn hàng'],
-  ['order-detail','Chi tiết đơn hàng'],['wishlist','Sản phẩm yêu thích'],['notifications','Thông báo'],['addresses','Địa chỉ nhận hàng'],['account','Tài khoản'],['general','Trang khác'],
+  ['home','Trang chủ','/'],['products','Danh sách sản phẩm','/products'],['product-detail','Chi tiết sản phẩm','/products/:slug'],['categories','Danh mục','/categories'],['brands','Thương hiệu','/brands'],
+  ['news','Tin tức','/news'],['news-detail','Chi tiết bài viết','/news/:slug'],['about','Giới thiệu','/about'],['contact','Liên hệ','/contact'],['faq','Câu hỏi thường gặp','/faq'],
+  ['privacy','Quyền riêng tư','/privacy'],['terms','Điều khoản','/terms'],['cart','Giỏ hàng','/cart'],['checkout','Thanh toán','/checkout'],['orders','Đơn hàng','/orders'],
+  ['order-detail','Chi tiết đơn hàng','/orders/:id'],['wishlist','Sản phẩm yêu thích','/wishlist'],['notifications','Thông báo','/notifications'],['addresses','Địa chỉ nhận hàng','/addresses'],['account','Tài khoản','/account'],['general','Trang khác','Các trang phụ'],
 ];
+const pagePath = (pageKey) => pageOptions.find(([key]) => key === pageKey)?.[2] || pageKey;
+const pageLabel = (pageKey) => pageOptions.find(([key]) => key === pageKey)?.[1] || pageKey;
 const empty = { name:'', nameEn:'', pageKey:'home', imageUrl:'', mobileImageUrl:'', altText:'', altTextEn:'', eyebrow:'', eyebrowEn:'', title:'', titleEn:'', description:'', descriptionEn:'', buttonText:'', buttonTextEn:'', buttonLink:'', status:'active', sortOrder:1, startsAt:'', endsAt:'', textPosition:'left', overlayOpacity:0.48 };
 const dateInput = (value) => value ? new Date(value).toISOString().slice(0,16) : '';
 const dateOut = (value) => value ? new Date(value).toISOString() : null;
@@ -30,7 +32,7 @@ export default function BannerManagement() {
   useEffect(() => { load(); },[load]);
 
   const visibleRows = useMemo(() => rows.filter((row) => {
-    const term = `${row.name||''} ${row.title||''} ${row.pageKey||''}`.toLocaleLowerCase('vi');
+    const term = `${row.name||''} ${row.title||''} ${row.pageKey||''} ${pagePath(row.pageKey)}`.toLocaleLowerCase('vi');
     return (pageFilter === 'all' || row.pageKey === pageFilter) && (statusFilter === 'all' || row.status === statusFilter) && term.includes(query.trim().toLocaleLowerCase('vi'));
   }),[rows,pageFilter,statusFilter,query]);
   const openCreate = () => { setEditingId(''); setForm({...empty,pageKey:pageFilter === 'all' ? 'home' : pageFilter,sortOrder:1}); setError(''); setNotice(''); setOpen(true); };
@@ -54,7 +56,7 @@ export default function BannerManagement() {
   const columns=[
     {key:'imageUrl',label:'Xem trước',render:(row)=><Media className="banner-admin-thumb" src={row.imageUrl} alt={row.altText||row.name}/>},
     {key:'name',label:'Banner',render:(row)=><div><b>{row.name}</b><small className="muted">{row.title}</small></div>},
-    {key:'pageKey',label:'Trang',render:(row)=>pageOptions.find(([key])=>key===row.pageKey)?.[1]||row.pageKey},
+    {key:'pageKey',label:'Đường dẫn hiển thị',render:(row)=><div><b>{pageLabel(row.pageKey)}</b><small className="muted">{pagePath(row.pageKey)}</small></div>},
     {key:'sortOrder',label:'Vị trí'},
     {key:'status',label:'Trạng thái',render:(row)=><span className={`banner-admin-status ${row.status}`}>{row.status==='active'?'Đang hiển thị':'Đã ẩn'}</span>},
     {key:'schedule',label:'Lịch hiển thị',render:(row)=><small>Từ {displayDate(row.startsAt)}<br/>Đến {displayDate(row.endsAt)}</small>},
@@ -73,7 +75,7 @@ export default function BannerManagement() {
       {error&&<div className="errorbox full">{error}</div>}
       <label>Tên quản trị *<input required maxLength={120} value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} placeholder="Ví dụ: Trang chủ · Bộ sưu tập hè"/></label>
       <label>Tên quản trị (English)<input maxLength={120} value={form.nameEn} onChange={(e)=>setForm({...form,nameEn:e.target.value})}/></label>
-      <label>Hiển thị ở trang *<select required value={form.pageKey} onChange={(e)=>setForm({...form,pageKey:e.target.value})}>{pageOptions.map(([key,label])=><option value={key} key={key}>{label}</option>)}</select></label>
+      <label>Trang/đường dẫn hiển thị *<select required value={form.pageKey} onChange={(e)=>setForm({...form,pageKey:e.target.value})}>{pageOptions.map(([key,label,path])=><option value={key} key={key}>{label} · {path}</option>)}</select><small className="muted">Banner tự xuất hiện tại đường dẫn này. Đường dẫn nút bên dưới là nơi khách được chuyển tới khi bấm CTA.</small></label>
       <label className="full">Ảnh hoặc video desktop (URL) *<input required type="url" value={form.imageUrl} onChange={(e)=>setForm({...form,imageUrl:e.target.value})} placeholder="https://…"/></label>
       <label className="full">Ảnh hoặc video mobile (URL, tùy chọn)<input type="url" value={form.mobileImageUrl} onChange={(e)=>setForm({...form,mobileImageUrl:e.target.value})} placeholder="Để trống để dùng media desktop"/></label>
       {form.imageUrl&&<Media className="banner-admin-preview full" src={form.imageUrl} alt="Xem trước banner"/>}

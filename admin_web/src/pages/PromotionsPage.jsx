@@ -2,21 +2,21 @@ import React,{useEffect,useState} from 'react';
 import {Page,Btn,Danger,Modal} from '../components/UI';
 import {products,categories,brands} from '../api';
 import {unwrap,idOf,err} from '../utils/helpers';
-import {loadPromotions,savePromotions,promoId} from '../utils/promotions';
+import {promotions} from '../api';
 
 const money=v=>Number(v||0).toLocaleString('vi-VN');
 const empty={name:'',scope:'product',productIds:[],categoryIds:[],brandIds:[],type:'percent',value:'',startDate:'',endDate:'',status:'active'};
 const listOf=r=>unwrap(r).items||[];
 function dateText(v){return v?new Date(v).toLocaleString('vi-VN'):'Không giới hạn'}
 export default function PromotionsPage(){
- const [rows,setRows]=useState(loadPromotions);const [ps,setPs]=useState([]);const [cs,setCs]=useState([]);const [bs,setBs]=useState([]);const [open,setOpen]=useState(false);const [form,setForm]=useState(empty);const [edit,setEdit]=useState(null);const [q,setQ]=useState('');const [error,setError]=useState('');const [loading,setLoading]=useState(false);
- const load=async()=>{setLoading(true);try{const [pr,cr,br]=await Promise.all([products.list({page:1,limit:500}),categories.list({page:1,limit:500}),brands.list({page:1,limit:500})]);setPs(listOf(pr));setCs(listOf(cr));setBs(listOf(br));}catch(e){setError(err(e))}finally{setLoading(false)}};
+ const [rows,setRows]=useState([]);const [ps,setPs]=useState([]);const [cs,setCs]=useState([]);const [bs,setBs]=useState([]);const [open,setOpen]=useState(false);const [form,setForm]=useState(empty);const [edit,setEdit]=useState(null);const [q,setQ]=useState('');const [error,setError]=useState('');const [loading,setLoading]=useState(false);
+ const load=async()=>{setLoading(true);setError('');try{const [pr,cr,br,pm]=await Promise.all([products.list({page:1,limit:500}),categories.list({page:1,limit:500}),brands.list({page:1,limit:500}),promotions.list({page:1,limit:100})]);setPs(listOf(pr));setCs(listOf(cr));setBs(listOf(br));const data=unwrap(pm);setRows(Array.isArray(data)?data:data.items||[]);}catch(e){setError(err(e))}finally{setLoading(false)}};
  useEffect(()=>{load()},[]);
 
  const openNew=()=>{setEdit(null);setForm({...empty});setError('');setOpen(true)};
- const openEdit=r=>{setEdit(r.id);setForm({...r,productIds:r.productIds||[],categoryIds:r.categoryIds||[],brandIds:r.brandIds||[]});setError('');setOpen(true)};
+ const openEdit=r=>{setEdit(r._id||r.id);setForm({...r,productIds:(r.productIds||[]).map(idOf),categoryIds:(r.categoryIds||[]).map(idOf),brandIds:(r.brandIds||[]).map(idOf),startDate:r.startDate?new Date(r.startDate).toISOString().slice(0,16):'',endDate:r.endDate?new Date(r.endDate).toISOString().slice(0,16):''});setError('');setOpen(true)};
  const toggle=(key,id)=>setForm(f=>({...f,[key]:(f[key]||[]).includes(id)?(f[key]||[]).filter(x=>x!==id):[...(f[key]||[]),id]}));
- const save=()=>{
+ const save=async()=>{
    setError(''); const value=Number(form.value); if(!form.name.trim())return setError('Vui lòng nhập tên chương trình.');
    if(!Number.isFinite(value)||value<=0)return setError('Giá trị giảm phải lớn hơn 0.');
    if(form.type==='percent'&&value>100)return setError('Giảm theo % không được vượt quá 100%.');
@@ -24,15 +24,15 @@ export default function PromotionsPage(){
    if(form.scope==='category'&&!form.categoryIds.length)return setError('Hãy chọn ít nhất 1 danh mục.');
    if(form.scope==='brand'&&!form.brandIds.length)return setError('Hãy chọn ít nhất 1 thương hiệu.');
    if(form.startDate&&form.endDate&&new Date(form.endDate)<new Date(form.startDate))return setError('Thời gian kết thúc phải sau thời gian bắt đầu.');
-   const item={...form,id:edit||promoId(),value};const next=edit?rows.map(x=>x.id===edit?item:x):[item,...rows];savePromotions(next);setRows(next);setOpen(false);
+   setLoading(true);try{const item={name:form.name.trim(),scope:form.scope,productIds:form.scope==='product'?form.productIds:[],categoryIds:form.scope==='category'?form.categoryIds:[],brandIds:form.scope==='brand'?form.brandIds:[],type:form.type,value,startDate:form.startDate||null,endDate:form.endDate||null,status:form.status||'active'};if(edit)await promotions.update(edit,item);else await promotions.create(item);setOpen(false);await load();}catch(e){setError(err(e))}finally{setLoading(false)}
  };
- const remove=id=>{if(confirm('Xóa chương trình giảm giá này?')){const next=rows.filter(x=>x.id!==id);savePromotions(next);setRows(next)}};
+ const remove=async id=>{if(confirm('Xóa chương trình giảm giá này?')){try{await promotions.remove(id);await load()}catch(e){setError(err(e))}}};
  const filtered=rows.filter(x=>String(x.name).toLowerCase().includes(q.toLowerCase()));
  return <Page title="Khuyến mãi" actions={<Btn onClick={openNew}>+ Tạo giảm giá</Btn>}>
-  <div className="promotion-note"><b>Ưu tiên áp dụng:</b> Sản phẩm → Danh mục → Thương hiệu. Một sản phẩm chỉ nhận <b>1 chương trình</b>; nếu trùng, giảm giá theo sản phẩm được ưu tiên. Dữ liệu chương trình lưu ở frontend, không thay đổi backend.</div>
+  <div className="promotion-note"><b>Ưu tiên áp dụng:</b> Sản phẩm → Danh mục → Thương hiệu. Một sản phẩm chỉ nhận <b>1 chương trình</b>; nếu trùng, giảm giá theo sản phẩm được ưu tiên. Chương trình được lưu tập trung trong cơ sở dữ liệu.</div>
   {error&&<div className="error">{error}</div>}
   <div className="product-toolbar"><div className="product-search"><span>⌕</span><input placeholder="Tìm chương trình…" value={q} onChange={e=>setQ(e.target.value)}/></div><Btn onClick={load}>Tải lại sản phẩm/danh mục/brand</Btn></div>
-  {loading?<div className="panel">Đang tải dữ liệu...</div>:<div className="tablewrap"><table><thead><tr><th>Chương trình</th><th>Phạm vi</th><th>Mức giảm</th><th>Thời gian</th><th>Trạng thái</th><th></th></tr></thead><tbody>{filtered.map(r=><tr key={r.id}><td><b>{r.name}</b></td><td>{r.scope==='product'?<>{r.productIds.length} sản phẩm</>:r.scope==='category'?<>{r.categoryIds.length} danh mục</>:<>{(r.brandIds||[]).length} thương hiệu</>}</td><td><b>{r.type==='percent'?`${r.value}%`:`${money(r.value)} ₫`}</b></td><td>{dateText(r.startDate)}<br/>→ {dateText(r.endDate)}</td><td><span className={`status-badge ${r.status==='active'?'status-active':'status-inactive'}`}>{r.status==='active'?'Đang bật':'Tắt'}</span></td><td><div className="actions"><Btn onClick={()=>openEdit(r)}>Sửa</Btn><Danger onClick={()=>remove(r.id)}>Xóa</Danger></div></td></tr>)}{!filtered.length&&<tr><td colSpan="6" className="empty">Chưa có chương trình giảm giá.</td></tr>}</tbody></table></div>}
+  {loading?<div className="panel">Đang tải dữ liệu...</div>:<div className="tablewrap"><table><thead><tr><th>Chương trình</th><th>Phạm vi</th><th>Mức giảm</th><th>Thời gian</th><th>Trạng thái</th><th></th></tr></thead><tbody>{filtered.map(r=><tr key={r._id||r.id}><td><b>{r.name}</b></td><td>{r.scope==='product'?<>{(r.productIds||[]).length} sản phẩm</>:r.scope==='category'?<>{(r.categoryIds||[]).length} danh mục</>:<>{(r.brandIds||[]).length} thương hiệu</>}</td><td><b>{r.type==='percent'?`${r.value}%`:`${money(r.value)} ₫`}</b></td><td>{dateText(r.startDate)}<br/>→ {dateText(r.endDate)}</td><td><span className={`status-badge ${r.status==='active'?'status-active':'status-inactive'}`}>{r.status==='active'?'Đang bật':'Tắt'}</span></td><td><div className="actions"><Btn onClick={()=>openEdit(r)}>Sửa</Btn><Danger onClick={()=>remove(r._id||r.id)}>Xóa</Danger></div></td></tr>)}{!filtered.length&&<tr><td colSpan="6" className="empty">Chưa có chương trình giảm giá.</td></tr>}</tbody></table></div>}
   {open&&<Modal title={edit?'Sửa giảm giá':'Tạo giảm giá'} onClose={()=>setOpen(false)}><div className="formgrid promotion-form">
    <label className="full">Tên chương trình<input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Ví dụ: Sale tháng 10"/></label>
    <label>Áp dụng theo<select value={form.scope} onChange={e=>setForm({...form,scope:e.target.value,productIds:[],categoryIds:[],brandIds:[]})}><option value="product">Sản phẩm</option><option value="category">Danh mục</option><option value="brand">Thương hiệu</option></select></label>

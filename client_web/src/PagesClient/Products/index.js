@@ -328,7 +328,7 @@ const Products = ({ isLoading, products, pagination, getProducts }) => {
 
     if (product.video) return product.video;
 
-    return process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
+    return "";
   };
 
   /*

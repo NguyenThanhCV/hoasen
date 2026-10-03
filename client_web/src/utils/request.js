@@ -1,8 +1,7 @@
 import axios from "axios";
 
-const API_URL = (
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api"
-).replace(/\/+$/, "");
+// Configure the API endpoint per environment in .env; the source stays portable.
+const API_URL = (process.env.REACT_APP_API_URL || "/api").replace(/\/+$/, "");
 
 const request = axios.create({
   baseURL: API_URL,

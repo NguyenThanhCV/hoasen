@@ -16,7 +16,7 @@ export const unwrapList = (result) => {
 };
 
 export const imageOf = (item) =>
-  item?.thumbnail || item?.images?.[0] || item?.variant?.thumbnail || item?.video || item?.product?.video || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
+  item?.thumbnail || item?.images?.[0] || item?.variant?.thumbnail || item?.video || item?.product?.video || "";
 
 export const attributesOf = (attributes) => {
   if (!attributes) return [];

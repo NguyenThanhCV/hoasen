@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Button, Checkbox, Form, Input, Modal, notification } from "antd";
+import { Button, Checkbox, Form, Input, notification } from "antd";
 
 import {
   GlobalOutlined,
@@ -10,6 +10,9 @@ import {
   CheckCircleFilled,
   ExclamationCircleFilled,
   CloseOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
@@ -20,11 +23,12 @@ import { connect } from "react-redux";
 import { withTranslation, useTranslation } from "react-i18next";
 
 import { asyncLoginRequestAction } from "./stores/action";
+import { register as registerAccount } from "../../api/shop";
 
 import "./index.css";
 
 const LoginComponent = (props) => {
-  const { loginRequestDispatch } = props;
+  const { loginRequestDispatch, register = false } = props;
 
   const { t, i18n } = useTranslation();
 
@@ -32,19 +36,13 @@ const LoginComponent = (props) => {
 
   const [loading, setLoading] = useState(false);
 
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-
   /*
    * =========================================================
    * CHANGE LANGUAGE
    * =========================================================
    */
 
-  const changeLanguage = (lang) => {
-    i18n.changeLanguage(lang);
-
-    setIsLanguageOpen(false);
-  };
+  const changeLanguage = (lang) => i18n.changeLanguage(lang);
 
   /*
    * =========================================================
@@ -66,7 +64,9 @@ const LoginComponent = (props) => {
        * }
        */
 
-      const result = await loginRequestDispatch(values);
+      const result = register
+        ? await registerAccount(values)
+        : await loginRequestDispatch(values);
 
 
       /*
@@ -78,7 +78,7 @@ const LoginComponent = (props) => {
       if (!result || result.success === false) {
         notification.error({
           message: (
-            <div className="login-notification-title">{t("LoginFailed")}</div>
+            <div className="login-notification-title">{t(register ? "RegistrationFailed" : "LoginFailed")}</div>
           ),
 
           description: (
@@ -120,12 +120,14 @@ const LoginComponent = (props) => {
 
       notification.success({
         message: (
-          <div className="login-notification-title">{t("LoginSuccessful")}</div>
+            <div className="login-notification-title">{t(register ? "RegistrationSuccessful" : "LoginSuccessful")}</div>
         ),
 
         description: (
           <div className="login-notification-description">
-            {t("WelcomeBackUser", { name: user?.name || user?.email || t("Customer") })}
+            {register
+              ? t("RegistrationWelcome", { name: user?.name || user?.email || t("Customer") })
+              : t("WelcomeBackUser", { name: user?.name || user?.email || t("Customer") })}
           </div>
         ),
 
@@ -164,7 +166,7 @@ const LoginComponent = (props) => {
 
       notification.error({
         message: (
-          <div className="login-notification-title">{t("LoginUnavailable")}</div>
+            <div className="login-notification-title">{t(register ? "RegistrationUnavailable" : "LoginUnavailable")}</div>
         ),
 
         description: (
@@ -197,7 +199,9 @@ const LoginComponent = (props) => {
    * =========================================================
    */
 
-  const currentLanguage = i18n.language === "vi" ? t("Vietnamese") : t("English");
+  const selectedLanguage = String(i18n.resolvedLanguage || i18n.language || "vi").toLowerCase().startsWith("en") ? "en" : "vi";
+  const targetLanguage = selectedLanguage === "vi" ? "en" : "vi";
+  const targetLanguageLabel = targetLanguage === "vi" ? t("Vietnamese") : t("English");
 
   return (
     <div className="login-page">
@@ -215,8 +219,9 @@ const LoginComponent = (props) => {
         <Button
           type="text"
           icon={<GlobalOutlined />}
-          onClick={() => setIsLanguageOpen(true)}>
-          {currentLanguage}
+          aria-label={t(targetLanguage === "vi" ? "SwitchToVietnamese" : "SwitchToEnglish")}
+          onClick={() => changeLanguage(targetLanguage)}>
+          {targetLanguage === "vi" ? "🇻🇳" : "🇬🇧"} {targetLanguageLabel}
         </Button>
       </div>
 
@@ -260,9 +265,9 @@ const LoginComponent = (props) => {
               <LoginOutlined />
             </div>
 
-            <h2>{t("WelcomeBack")}</h2>
+            <h2>{t(register ? "CreateAccountTitle" : "WelcomeBack")}</h2>
 
-            <p>{t("SignInToShop")}</p>
+            <p>{t(register ? "CreateAccountDescription" : "SignInToShop")}</p>
           </div>
 
           {/* =================================================
@@ -270,17 +275,23 @@ const LoginComponent = (props) => {
           ================================================= */}
 
           <Form
-            name="login"
+            name={register ? "register" : "login"}
             layout="vertical"
-            initialValues={{
-              remember: true,
-            }}
+            initialValues={register ? undefined : { remember: true }}
             onFinish={onFinish}
             className="login-form">
+            {register && <Form.Item
+              label={t("FullName")}
+              name="name"
+              rules={[{ required: true, whitespace: true, message: t("NameRequired") }]}
+            >
+              <Input size="large" prefix={<UserOutlined />} placeholder={t("FullNamePlaceholder")} autoComplete="name" />
+            </Form.Item>}
+
             {/* EMAIL */}
 
             <Form.Item
-              label="Email"
+              label={t("Email")}
               name="email"
               rules={[
                 {
@@ -301,6 +312,10 @@ const LoginComponent = (props) => {
               />
             </Form.Item>
 
+            {register && <Form.Item label={t("Phone")} name="phone" rules={[{ pattern: /^[+\d\s().-]*$/, message: t("PhoneInvalid") }]}>
+              <Input size="large" prefix={<PhoneOutlined />} placeholder={t("PhonePlaceholder")} autoComplete="tel" />
+            </Form.Item>}
+
             {/* PASSWORD */}
 
             <Form.Item
@@ -313,21 +328,21 @@ const LoginComponent = (props) => {
                 },
 
                 {
-                  min: 6,
-                  message: t("PasswordMinLength"),
+                  min: register ? 8 : 6,
+                  message: t(register ? "RegistrationPasswordMinLength" : "PasswordMinLength"),
                 },
               ]}>
               <Input.Password
                 size="large"
                 prefix={<LockOutlined />}
                 placeholder={t("PasswordPlaceholder")}
-                autoComplete="current-password"
+                autoComplete={register ? "new-password" : "current-password"}
               />
             </Form.Item>
 
             {/* OPTIONS */}
 
-            <div className="login-options">
+            {!register && <div className="login-options">
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>{t("RememberLogin")}</Checkbox>
               </Form.Item>
@@ -345,7 +360,7 @@ const LoginComponent = (props) => {
                 }}>
                 {t("ForgotPassword")}
               </button>
-            </div>
+            </div>}
 
             {/* LOGIN BUTTON */}
 
@@ -356,8 +371,8 @@ const LoginComponent = (props) => {
                 size="large"
                 block
                 loading={loading}
-                icon={<LoginOutlined />}>
-                {loading ? t("SigningIn") : t("SignIn")}
+                icon={register ? <UserAddOutlined /> : <LoginOutlined />}>
+                {loading ? t(register ? "CreatingAccount" : "SigningIn") : t(register ? "CreateAccountButton" : "SignIn")}
               </Button>
             </Form.Item>
           </Form>
@@ -365,14 +380,14 @@ const LoginComponent = (props) => {
           {/* REGISTER */}
 
           <div className="register-area">
-            <span>{t("NoAccount")}</span>
+            <span>{t(register ? "AlreadyHaveAccount" : "NoAccount")}</span>
 
             <button
               type="button"
               onClick={() => {
-                navigate("/register");
+                navigate(register ? "/login" : "/register");
               }}>
-              {t("SignUpNow")}
+              {t(register ? "SignIn" : "SignUpNow")}
             </button>
           </div>
 
@@ -390,46 +405,6 @@ const LoginComponent = (props) => {
         </section>
       </div>
 
-      {/* =====================================================
-          LANGUAGE MODAL
-      ===================================================== */}
-
-      <Modal
-        open={isLanguageOpen}
-        footer={null}
-        closable={false}
-        onCancel={() => {
-          setIsLanguageOpen(false);
-        }}
-        width={280}
-        centered
-        className="language-modal">
-        <div className="language-modal-content">
-          <div className="language-title">
-            <GlobalOutlined />
-
-            <span>{t("ChooseLanguage")}</span>
-          </div>
-
-          <Button
-            block
-            onClick={() => {
-              changeLanguage("vi");
-            }}
-            className={i18n.language === "vi" ? "language-active" : ""}>
-            🇻🇳 {t("Vietnamese")}
-          </Button>
-
-          <Button
-            block
-            onClick={() => {
-              changeLanguage("en");
-            }}
-            className={i18n.language === "en" ? "language-active" : ""}>
-            🇬🇧 {t("English")}
-          </Button>
-        </div>
-      </Modal>
     </div>
   );
 };

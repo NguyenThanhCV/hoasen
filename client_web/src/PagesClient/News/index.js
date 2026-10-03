@@ -8,14 +8,9 @@ import { localized } from "../../utils/localized";
 import { articleTagEnglish } from "../../utils/articleTranslations";
 import "./style.css";
 
-document.documentElement.style.setProperty(
-  "--news-hero-image",
-  `url("${process.env.REACT_APP_NEWS_HERO_IMAGE_URL || ""}")`,
-);
-
 const unwrap = (response) => response?.data?.data ?? response?.data ?? response;
 const dateLabel = (date, lang) => date ? new Date(date).toLocaleDateString(String(lang || "").startsWith("en") ? "en-US" : "vi-VN", { day: "2-digit", month: "long", year: "numeric" }) : "";
-const imageOf = (article) => article.coverImage || process.env.REACT_APP_NEWS_PLACEHOLDER_URL || "";
+const imageOf = (article) => article.coverImage || "";
 
 function NewsCard({ article, featured = false }) {
   const { t, i18n } = useTranslation();
@@ -49,7 +44,7 @@ export default function NewsPage() {
   const submit = (event) => { event.preventDefault(); const next = new URLSearchParams(params); search.trim() ? next.set("search", search.trim()) : next.delete("search"); setParams(next); };
   const featured = !category && !params.get("search") ? state.articles[0] : null;
   return <main className="news-page">
-    <header className="news-hero"><div className="news-hero-copy"><span className="news-eyebrow">{t("NewsKicker")}</span><h1>{t("NewsHeadline")}</h1><p>{t("NewsDescription")}</p><a href="#news-list" className="news-hero-cta">{t("ExploreArticles")} <span>↓</span></a></div><div className="news-hero-art"><Media src={process.env.REACT_APP_NEWS_HERO_IMAGE_URL || ""} alt="" className="news-hero-media" autoPlay muted loop controls={false} /><span className="news-art-note">{t("GrowKnowledgeArt")}</span></div></header>
+    <header className="news-hero"><div className="news-hero-copy"><span className="news-eyebrow">{t("NewsKicker")}</span><h1>{t("NewsHeadline")}</h1><p>{t("NewsDescription")}</p><a href="#news-list" className="news-hero-cta">{t("ExploreArticles")} <span>↓</span></a></div><div className="news-hero-art"><Media src={state.articles[0]?.coverImage || ""} alt={localized(state.articles[0], "title", lang) || t("NewsPageTitle")} className="news-hero-media" autoPlay muted loop controls={false} /><span className="news-art-note">{t("GrowKnowledgeArt")}</span></div></header>
     <section id="news-list" className="news-content"><div className="news-heading"><div><span className="news-eyebrow">{t("LatestUpdates")}</span><h2>{t("NewsPageTitle")}</h2><p>{t("HelpfulGardenInformation")}</p></div><form className="news-search" onSubmit={submit}><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("SearchArticles")} aria-label={t("SearchArticles")} /><button type="submit" aria-label={t("SearchAction")}>⌕</button></form></div>
       <nav className="news-categories" aria-label={t("NewsCategories")}><Link className={!category ? "active" : ""} to="/news">{t("All")}</Link>{state.categories.map((item) => <Link key={item._id} className={category === item.slug ? "active" : ""} to={`/news?category=${encodeURIComponent(item.slug)}`}>{localized(item, "name", lang)}</Link>)}</nav>
       {state.error ? <div className="news-state"><h3>{t("CouldNotLoadContent")}</h3><p>{state.error}</p><button onClick={load}>{t("TryAgain")}</button></div> : state.loading ? <div className="news-state">{t("LoadingArticle")}</div> : !state.articles.length ? <div className="news-state"><h3>{t("NoMatchingArticles")}</h3><p>{t("ChooseAnotherCategory")}</p><Link to="/news">{t("ViewAllArticles")}</Link></div> : <>{featured && <NewsCard article={featured} featured />}<div className="news-grid">{state.articles.filter((article) => article._id !== featured?._id).map((article) => <NewsCard key={article._id} article={article} />)}</div></>}

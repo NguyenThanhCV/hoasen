@@ -3,9 +3,9 @@ const r = require("express").Router(),
   { protect } = require("../middlewares/authMiddleware"),
   perm = require("../middlewares/permissionMiddleware"),
   P = require("../constants/permissions");
+r.get("/", c.list);
 r.use(protect);
 r.get("/code/:code", perm(P.COUPON_READ), c.byCode);
-r.get("/", perm(P.COUPON_READ), c.list);
 r.get("/:id", perm(P.COUPON_READ), c.get);
 r.post("/", perm(P.COUPON_CREATE), c.create);
 r.patch("/:id", perm(P.COUPON_UPDATE), c.update);

@@ -7,6 +7,7 @@ const groups = [
   "variant",
   "cart",
   "coupon",
+  "promotion",
   "notification",
   "order",
   "orderItem",

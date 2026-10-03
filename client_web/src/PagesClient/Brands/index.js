@@ -114,7 +114,7 @@ const Brands = ({ brands, isLoading, pagination, getBrands, clearBrands }) => {
       return brand.logo;
     }
 
-    return process.env.REACT_APP_BRAND_PLACEHOLDER_URL || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
+    return "";
   };
 
   const renderPageNumbers = () => {

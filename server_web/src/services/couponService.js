@@ -8,6 +8,19 @@ const Model = require("../models/Coupon"),
   }),
   AppError = require("../utils/AppError");
 exports.list = crud.list;
+exports.listPublic = async (query = {}) => {
+  const now = new Date();
+  return crud.list(
+    {
+      status: "active",
+      $and: [
+        { $or: [{ startDate: null }, { startDate: { $lte: now } }] },
+        { $or: [{ endDate: null }, { endDate: { $gte: now } }] },
+      ],
+    },
+    query,
+  );
+};
 exports.get = crud.get;
 exports.create = async (d) => crud.create({ ...d, code: d.code.toUpperCase() });
 exports.update = async (id, d) =>

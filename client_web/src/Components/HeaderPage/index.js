@@ -133,14 +133,14 @@ const HeaderPage = () => {
     const keyword = searchText.trim();
 
     if (!keyword) {
-      navigate("/products");
+      navigate("/search");
 
       setMobileMenuOpen(false);
 
       return;
     }
 
-    navigate(`/products?search=${encodeURIComponent(keyword)}`);
+    navigate(`/search?q=${encodeURIComponent(keyword)}`);
 
     setMobileMenuOpen(false);
   };
@@ -478,7 +478,7 @@ const HeaderPage = () => {
                 value={searchText}
                 onChange={(event) => setSearchText(event.target.value)}
                 onKeyDown={handleSearchKeyDown}
-                placeholder={t("SearchProducts")}
+                placeholder={t("SearchAllInfo")}
                 suffix={<SearchOutlined onClick={handleSearch} style={{ cursor: "pointer" }} />}
               />
           </div>
@@ -582,7 +582,7 @@ const HeaderPage = () => {
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             onKeyDown={handleSearchKeyDown}
-            placeholder={t("SearchProducts")}
+            placeholder={t("SearchAllInfo")}
             suffix={
               <SearchOutlined
                 onClick={handleSearch}

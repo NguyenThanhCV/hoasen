@@ -20,7 +20,15 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin))
+      const localDevelopmentOrigin =
+        process.env.NODE_ENV !== "production" &&
+        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin || "");
+      if (
+        !origin ||
+        allowedOrigins.length === 0 ||
+        allowedOrigins.includes(origin) ||
+        localDevelopmentOrigin
+      )
         return callback(null, true);
       callback(new Error("Origin không được phép"));
     },
@@ -45,7 +53,8 @@ app.use(
 app.get("/", (req, res) =>
   res.json({ success: true, message: "Shop API running" }),
 );
-app.use("/api", routes);
+const apiPrefix = (process.env.API_PREFIX || "/api").replace(/\/+$/, "");
+app.use(apiPrefix.startsWith("/") ? apiPrefix : `/${apiPrefix}`, routes);
 app.use(notFound);
 app.use(errorHandler);
 

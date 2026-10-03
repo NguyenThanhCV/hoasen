@@ -33,6 +33,7 @@ module.exports = {
     "inventory.read",
     "inventory.adjust",
     "coupon.read",
+    "promotion.read",
   ],
   manager: all.filter(
     (x) => !["user.delete", "user.role", "user.permissions"].includes(x),

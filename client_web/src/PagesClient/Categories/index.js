@@ -159,7 +159,7 @@ const Categories = ({
       return category.image;
     }
 
-    return process.env.REACT_APP_CATEGORY_PLACEHOLDER_URL || process.env.REACT_APP_PRODUCT_PLACEHOLDER_URL || "";
+    return "";
   };
 
   const getProductCount = (category) => {

@@ -1,7 +1,10 @@
-import request, { saveTokens, clearSession } from "../utils/request";
+import axios from "axios";
+import request, { API_URL, saveTokens, clearSession } from "../utils/request";
 
 const unwrap = (response) => response.data;
 const dataOf = (result) => result?.data ?? result;
+// Public storefront endpoints should not inherit an expired customer token.
+const publicRequest = axios.create({ baseURL: API_URL, timeout: 60000 });
 
 export const login = async (payload) => {
   const result = unwrap(await request.post("/auth/login", payload));
@@ -66,6 +69,6 @@ export const readNotification = (id) => request.patch(`/notifications/${id}/read
 export const readAllNotifications = () => request.post("/notifications/read-all").then(unwrap);
 
 export const validateCoupon = (code) => request.get(`/coupons/code/${encodeURIComponent(code)}`).then(unwrap);
-export const getCoupons = (params = {}) => request.get("/coupons", { params }).then(unwrap);
+export const getCoupons = (params = {}) => publicRequest.get("/coupons", { params }).then(unwrap);
 
 export { dataOf };

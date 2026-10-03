@@ -1,7 +1,7 @@
 const s = require("../services/couponService"),
   a = require("../utils/asyncHandler");
 exports.list = a(async (req, res) =>
-  res.json({ success: true, ...(await s.list({}, req.query)) }),
+  res.json({ success: true, ...(await s.listPublic(req.query)) }),
 );
 exports.get = a(async (req, res) =>
   res.json({ success: true, data: await s.get(req.params.id) }),

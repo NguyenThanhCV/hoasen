@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Page, Btn, Danger, Money } from "../components/UI";
-import { products, variants, categories, brands } from "../api";
+import { products, variants, categories, brands, promotions } from "../api";
 import { unwrap, err, idOf } from "../utils/helpers";
-import { loadPromotions, discountForProduct } from "../utils/promotions";
+import { discountForProduct } from "../utils/promotions";
 import Media from "../components/Media";
 
 const PAGE_SIZE = 20;
@@ -47,19 +47,20 @@ export default function Products() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [variantData, setVariantData] = useState({});
-  const [promotions, setPromotions] = useState(loadPromotions);
-  useEffect(() => { const sync = () => setPromotions(loadPromotions()); window.addEventListener('promotions-changed', sync); return () => window.removeEventListener('promotions-changed', sync); }, []);
+  const [promotionRows, setPromotionRows] = useState([]);
 
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const loadOptions = async () => {
     try {
-      const [cr, br] = await Promise.all([
+      const [cr, br, pr] = await Promise.all([
         categories.list({ page: 1, limit: 500 }),
         brands.list({ page: 1, limit: 500 }),
+        promotions.list({ page: 1, limit: 100 }),
       ]);
       setCategoriesList(listOf(cr));
       setBrandsList(listOf(br));
+      setPromotionRows(listOf(pr));
     } catch (e) { setError(err(e)); }
   };
 
@@ -166,7 +167,7 @@ export default function Products() {
             const available = vs.reduce((n, v) => n + Math.max(Number(v.stock || 0) - Number(v.reservedStock || 0), 0), 0);
             const thumb = p.thumbnail || p.images?.[0] || vs.find(v => v.thumbnail)?.thumbnail || p.video;
             const discounts = vs.map(v => discountInfo(v.price, v.compareAtPrice)).filter(v => v != null);
-            const promo = discountForProduct(p, promotions);
+            const promo = discountForProduct(p, promotionRows);
             const saleMin = discounts.length ? Math.min(...discounts) : 0;
             const saleMax = discounts.length ? Math.max(...discounts) : 0;
             return <tr key={pid}>

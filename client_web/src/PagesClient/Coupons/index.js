@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Empty, Spin, Tag, Tabs, message } from "antd";
-import { CopyOutlined, TagOutlined, ClockCircleOutlined, LoginOutlined, FireOutlined, ShoppingOutlined } from "@ant-design/icons";
+import { CopyOutlined, TagOutlined, ClockCircleOutlined, FireOutlined, ShoppingOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { getCoupons, getProducts } from "../../api/shop";
 import { getVariantsService } from "../../api/apiVariant";
@@ -83,6 +83,15 @@ export default function CouponsPage() {
     }
   };
 
+  const retryCoupons = () => {
+    setLoading(true);
+    setError("");
+    getCoupons({ page: 1, limit: 100, sort: "newest" })
+      .then((response) => setCoupons(Array.isArray(response?.data) ? response.data : []))
+      .catch((requestError) => setError(requestError?.response?.data?.message || t("CouponLoadError")))
+      .finally(() => setLoading(false));
+  };
+
   return (
     <main className="coupon-page">
       <section className="coupon-hero">
@@ -112,7 +121,7 @@ export default function CouponsPage() {
           <Tabs.TabPane tab={<span><TagOutlined /> {t("DiscountCodes")}</span>} key="coupons">
               <div className="coupon-section-heading"><div><span className="coupon-eyebrow">{t("ForYou")}</span><h2>{t("AvailableCoupons")}</h2></div>{!loading && <span className="coupon-count">{available.length} {t("PromotionsPlural")}</span>}</div>
               {loading ? <div className="coupon-state"><Spin size="large" /><span>{t("LoadingCoupons")}</span></div>
-                : error ? <div className="coupon-state coupon-error"><p>{t("CouponLoadError")}</p><Link className="coupon-login-link" to="/login"><LoginOutlined /> {t("Login")}</Link></div>
+                : error ? <div className="coupon-state coupon-error"><p>{error}</p><button type="button" className="coupon-retry" onClick={retryCoupons}><ReloadOutlined /> {t("TryAgain")}</button></div>
                   : available.length === 0 ? <div className="coupon-empty"><Empty description={t("NoUsableCoupons")} /><p>{t("ComeBackForOffers")}</p></div>
                     : <div className="coupon-grid">{available.map((coupon) => (
                 <article className="coupon-card" key={coupon._id}>

@@ -1,31 +1,5 @@
-const KEY = "shop_admin_promotions_v2";
-export const PROMO_KEY = KEY;
-
-export const PROMOTION_SCOPES = {
-  product: "Sản phẩm",
-  category: "Danh mục",
-  brand: "Thương hiệu",
-};
-
 export const PROMOTION_PRIORITY = { product: 3, category: 2, brand: 1 };
-
-export const promoId = () => `promo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-
-export function loadPromotions() {
-  try {
-    const current = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (Array.isArray(current)) return current;
-    const legacy = JSON.parse(localStorage.getItem("shop_admin_promotions_v1") || "[]");
-    return Array.isArray(legacy) ? legacy : [];
-  } catch { return []; }
-}
-
-export function savePromotions(rows) {
-  localStorage.setItem(KEY, JSON.stringify(rows));
-  window.dispatchEvent(new Event("promotions-changed"));
-}
-
-export function activePromotions(rows = loadPromotions(), now = Date.now()) {
+export function activePromotions(rows = [], now = Date.now()) {
   return rows.filter(x =>
     x.status !== "inactive" &&
     (!x.startDate || new Date(x.startDate).getTime() <= now) &&
@@ -33,8 +7,8 @@ export function activePromotions(rows = loadPromotions(), now = Date.now()) {
   );
 }
 
-const ids = value => (value || []).map(String);
 const refId = value => String(value?._id || value?.id || value || "");
+const ids = value => (value || []).map(refId);
 
 export function promotionMatchesProduct(promo, product) {
   const pid = refId(product);
@@ -48,7 +22,7 @@ export function promotionMatchesProduct(promo, product) {
 
 // Một sản phẩm chỉ nhận 1 chương trình. Ưu tiên: sản phẩm > danh mục > thương hiệu.
 // Nếu cùng cấp có nhiều chương trình phù hợp, chương trình cập nhật sau được chọn.
-export function discountForProduct(product, promotions = loadPromotions(), now = Date.now()) {
+export function discountForProduct(product, promotions = [], now = Date.now()) {
   const active = activePromotions(promotions, now);
   const candidates = active
     .filter(promo => promotionMatchesProduct(promo, product))
