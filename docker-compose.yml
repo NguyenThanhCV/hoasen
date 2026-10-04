@@ -19,9 +19,9 @@ services:
       PORT: 5000
       API_PREFIX: ${API_PREFIX:-/api}
       MONGODB_URI: mongodb://mongo:27017/${MONGO_DATABASE:-webdl}
-      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:3100}
-      ADMIN_ORIGIN: ${ADMIN_ORIGIN:-http://localhost:3101}
-      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:3100}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-http://localhost:13200}
+      ADMIN_ORIGIN: ${ADMIN_ORIGIN:-http://localhost:13201}
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:13200}
       EXTRA_CORS_ORIGINS: ${EXTRA_CORS_ORIGINS:-}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in root .env}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
@@ -39,10 +39,10 @@ services:
       context: ./client_web
       args:
         REACT_APP_API_URL: /api
-        REACT_APP_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:3100}
+        REACT_APP_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:13200}
     restart: unless-stopped
     ports:
-      - "${CLIENT_PORT:-3100}:80"
+      - "${CLIENT_PORT:-13200}:80"
     depends_on:
       - api
 
@@ -51,12 +51,32 @@ services:
       context: ./admin_web
       args:
         VITE_API_URL: /api
-        VITE_STOREFRONT_URL: ${PUBLIC_SITE_URL:-http://localhost:3100}
+        VITE_STOREFRONT_URL: ${PUBLIC_SITE_URL:-http://localhost:13200}
     restart: unless-stopped
     ports:
-      - "${ADMIN_PORT:-3101}:80"
+      - "${ADMIN_PORT:-13201}:80"
     depends_on:
       - api
 
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["domain"]
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:-example.invalid}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - client
+      - admin
+
 volumes:
   mongo_data:
+  caddy_data:
+  caddy_config:

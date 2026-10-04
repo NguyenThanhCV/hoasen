@@ -1,7 +1,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
 ARG REACT_APP_API_URL=/api
 ARG REACT_APP_SITE_URL=http://localhost:3000

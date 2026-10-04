@@ -1,0 +1,7 @@
+{$DOMAIN}, www.{$DOMAIN} {
+	reverse_proxy client:80
+}
+
+admin.{$DOMAIN} {
+	reverse_proxy admin:80
+}
